@@ -107,7 +107,17 @@ async def acgmx():
             res = json.loads(res)
     img_url = res['data']['large']
     pid = res['data']['illust']
+    p = res['data']['restrice']
     title = res['data']['title']
     author = res['data']['user']['name']
     uid = res['data']['user']['id']
-    return await render_template('acgmx.html', img_url=img_url, pid=pid, title=title, author=author, uid=uid, groups=groups)
+    img_type = img_url.split('.')[-1]
+    pixiv_cat_url = f'https://pixiv.cat/{pid}-{p+1}.{img_type}'
+    return await render_template('acgmx.html',
+                                 pixiv_cat_url=pixiv_cat_url,
+                                 img_url=img_url,
+                                 pid=pid,
+                                 title=title,
+                                 author=author,
+                                 uid=uid,
+                                 groups=groups)
