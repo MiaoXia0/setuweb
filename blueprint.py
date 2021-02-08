@@ -20,8 +20,8 @@ async def setuindex():
 
 @bp.route('/result', methods=['POST'])
 async def seturesult():
-    groups = get_groups()
     form = await request.form
+    groups = await get_groups()
     keyword = form['keyword']
     if keyword == '':
         kwargs = {
