@@ -28,7 +28,7 @@ async def seturesult():
     code = -1
     for apikey in apikeys:
         if keyword == '':
-            kwargs = {
+            params = {
                 'apikey': apikey,
                 'proxy': config['proxy'],
                 'r18': form['r18'],
@@ -36,7 +36,7 @@ async def seturesult():
                 'size1200': form['size1200'],
             }
         else:
-            kwargs = {
+            params = {
                 'apikey': config['apikey'],
                 'proxy': config['proxy'],
                 'keyword': keyword,
@@ -45,7 +45,7 @@ async def seturesult():
                 'size1200': form['size1200'],
             }
         async with aiohttp.ClientSession() as session:
-            async with session.get('https://api.lolicon.app/setu/', kwargs=kwargs) as rq:
+            async with session.get('https://api.lolicon.app/setu/', params=params) as rq:
                 result = json.loads(rq.text)
         code = result['code']
         if code == 0:
