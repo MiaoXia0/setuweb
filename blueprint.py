@@ -107,7 +107,7 @@ async def acgmx():
             res = json.loads(res)
     img_url = res['data']['large']
     pid = res['data']['illust']
-    p = res['data']['restrice']
+    p = res['data']['restrict']
     title = res['data']['title']
     author = res['data']['user']['name']
     uid = res['data']['user']['id']
