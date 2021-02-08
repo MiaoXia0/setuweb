@@ -29,6 +29,6 @@ async def send_to_group(group_id: int, url: str):
     await bot.send_group_msg(group_id=group_id, message=msg)
 
 
-async def get_groups():
-    groups = await bot.get_group_list()
+def get_groups():
+    groups = bot.get_group_list()
     return groups
