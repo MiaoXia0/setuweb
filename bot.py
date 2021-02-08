@@ -1,6 +1,7 @@
 from nonebot import get_bot
 from hoshino import Service, R
 from hoshino.typing import HoshinoBot, CQEvent
+from hoshino.priv import ADMIN, check_priv
 import requests
 import os
 import aiohttp
@@ -41,6 +42,9 @@ async def setuhelp(bot: HoshinoBot, ev: CQEvent):
 
 @sv.on_fullmatch('setuallow')
 async def setuallow(bot: HoshinoBot, ev: CQEvent):
+    if not check_priv(ev, ADMIN):
+        await bot.send(ev, f'管理员以上才能使用')
+        return
     group_id = ev.group_id
     allowed_groups[group_id] = True
     json.dump(allowed_groups, open(allow_path, 'w'))
@@ -49,6 +53,9 @@ async def setuallow(bot: HoshinoBot, ev: CQEvent):
 
 @sv.on_fullmatch('setuforbid')
 async def setuforbid(bot: HoshinoBot, ev: CQEvent):
+    if not check_priv(ev, ADMIN):
+        await bot.send(ev, f'管理员以上才能使用')
+        return
     group_id = ev.group_id
     allowed_groups[group_id] = False
     json.dump(allowed_groups, open(allow_path, 'w'))
