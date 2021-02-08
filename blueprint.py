@@ -1,6 +1,6 @@
-from .bot import get_groups, send_to_group
+from .bot import get_groups, send_to_group, down_acgmx_img
 from quart import Blueprint, render_template, request
-import requests
+import aiohttp
 import os
 
 try:
@@ -44,8 +44,9 @@ async def seturesult():
                 'num': form['num'],
                 'size1200': form['size1200'],
             }
-        rq = requests.get('https://api.lolicon.app/setu/', kwargs)
-        result = json.loads(rq.text)
+        async with aiohttp.ClientSession() as session:
+            async with session.get('https://api.lolicon.app/setu/', kwargs=kwargs) as rq:
+                result = json.loads(rq.text)
         code = result['code']
         if code == 0:
             break
@@ -76,3 +77,23 @@ async def send():
     group_id = int(form['group_id'])
     result = await send_to_group(group_id, url, pid, p, title, author, ori_url)
     return result
+
+
+@bp.route('/acgmx', methods=['POST'])
+async def acgmx():
+    headers = {
+        'token': config['acgmx_token'],
+        'referer': 'https://www.acgmx.com/'
+    }
+    url = 'https://api.acgmx.com/public/setu'
+    async with aiohttp.ClientSession(headers=headers) as session:
+        async with session.get(url) as res:
+            res = await res.read()
+            res = json.loads(res)
+    img_url = res['data']['large']
+    # await down_acgmx_img(img_url, config['acgmx_token'])
+    pid = res['data']['illust']
+    title = res['data']['title']
+    author = res['data']['user']['name']
+    uid = res['data']['user']['id']
+    return render_template('acgmx.html', img_url=img_url, pid=pid, title=title, author=author, uid=uid)

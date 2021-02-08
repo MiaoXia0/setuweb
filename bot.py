@@ -66,12 +66,26 @@ async def down_img(url: str):
     print(f'downloading from {url}')
     filename = url.split('/')[-1]
     path = R.img('setuweb/').path
-    session = aiohttp.ClientSession()
-    res = await session.get(url)
-    f = open(f'{path}/{filename}', 'wb')
-    res = await res.read()
-    f.write(res)
-    await session.close()
+    async with aiohttp.ClientSession() as session:
+        res = await session.get(url)
+        f = open(f'{path}/{filename}', 'wb')
+        res = await res.read()
+        f.write(res)
+
+
+async def down_acgmx_img(url: str, token: str):
+    headers = {
+        'token': token,
+        'referer': 'https://www.acgmx.com/'
+    }
+    print(f'downloading from {url}')
+    filename = url.split('/')[-1]
+    path = R.img('setuweb/').path
+    async with aiohttp.ClientSession(headers=headers) as session:
+        res = await session.get(url)
+        f = open(f'{path}/{filename}', 'wb')
+        res = await res.read()
+        f.write(res)
 
 
 async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, author: str, ori_url: str):
