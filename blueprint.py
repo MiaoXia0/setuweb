@@ -62,5 +62,5 @@ async def send():
     form = await request.form
     url = form['url']
     group_id = int(form['group_id'])
-    await send_to_group(group_id, url)
-    return f'已发送到群{group_id}！'
+    result = await send_to_group(group_id, url)
+    return result

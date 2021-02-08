@@ -8,5 +8,7 @@
 |指令|功能|
 |---|---|
 |setuhelp|查看帮助|
+|groupallow|允许当前群发送setu|
+|groupfirbid|禁止当前群发送setu|
 
 本插件图片发送前下载至资源文件夹中img/setuweb
