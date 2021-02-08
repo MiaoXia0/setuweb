@@ -30,4 +30,5 @@ async def send_to_group(group_id: int, url: str):
 
 
 async def get_groups():
-    return await bot.get_group_list()
+    groups = await bot.get_group_list()
+    return groups
