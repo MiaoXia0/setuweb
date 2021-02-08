@@ -46,7 +46,8 @@ async def seturesult():
             }
         async with aiohttp.ClientSession() as session:
             async with session.get('https://api.lolicon.app/setu/', params=params) as rq:
-                result = json.loads(str(rq.read()))
+                result = await rq.read()
+                result = json.loads(result)
         code = result['code']
         if code == 0:
             break
