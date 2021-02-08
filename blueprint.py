@@ -84,12 +84,13 @@ async def send():
 async def acgmxsend():
     form = await request.form
     pid = form['pid']
+    p = form['p']
     url = form['url']
     ori_url = f'https://www.pixiv.net/artworks/{pid}'
     title = form['title']
     author = form['author']
     group_id = int(form['group_id'])
-    result = await send_to_group_acgmx(group_id, url, pid, title, author, ori_url, config['acgmx_token'])
+    result = await send_to_group_acgmx(group_id, url, pid, p, title, author, ori_url, config['acgmx_token'])
     return result
 
 
@@ -108,6 +109,7 @@ async def acgmx():
     img_url = res['data']['large']
     pid = res['data']['illust']
     xRestrict = res['data']['xRestrict']
+    restrict = res['data']['restrict']
     title = res['data']['title']
     author = res['data']['user']['name']
     uid = res['data']['user']['id']
@@ -117,6 +119,7 @@ async def acgmx():
                                  img_url=img_url,
                                  pixiv_cat_url=pixiv_cat_url,
                                  pid=pid,
+                                 p=restrict,
                                  title=title,
                                  author=author,
                                  uid=uid,

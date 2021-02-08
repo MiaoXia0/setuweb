@@ -6,7 +6,7 @@
     <script src="/setu/static/jquery-3.5.1.min.js"></script>
 </head>
 <body>
-    pid: {{pid}}
+    pid: {{pid}} p{{p}}
     uid: {{uid}}<br />
     标题: {{title}}<br />
     作者: {{author}}<br />
@@ -14,6 +14,7 @@
     <form id="send{{pid}}" onsubmit="return false" action="" method="post">
         <input type="hidden" name="url" value="{{img_url}}">
         <input type="hidden" name="pid" value="{{pid}}">
+        <input type="hidden" name="p" value="{{p}}">
         <input type="hidden" name="title" value="{{title}}">
         <input type="hidden" name="author" value="{{author}}">
         <select name="group_id">
