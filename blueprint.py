@@ -68,6 +68,10 @@ async def seturesult():
 async def send():
     form = await request.form
     url = form['url']
+    pid = form['pid']
+    p = form['p']
+    title = form['title']
+    author = form['author']
     group_id = int(form['group_id'])
-    result = await send_to_group(group_id, url)
+    result = await send_to_group(group_id, url, pid, p, title, author)
     return result

@@ -38,6 +38,10 @@
             <br />
             <form id="send{{setu['pid']}}" onsubmit="return false" action="" method="post">
                 <input type="hidden" name="url" value="{{setu['url']}}">
+                <input type="hidden" name="pid" value="{{setu['pid']}}">
+                <input type="hidden" name="p" value="{{setu['p']}}">
+                <input type="hidden" name="title" value="{{setu['title']}}">
+                <input type="hidden" name="author" value="{{setu['author']}}">
                 <select name="group_id">
                 {% for group in groups %}
                     <option value="{{group['group_id']}}">{{group['group_name']}}({{group['group_id']}})</option>
