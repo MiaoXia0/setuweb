@@ -1,5 +1,5 @@
 {
   "apikey": [""],
-  "acgmx_token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJNaWFvWGlhbyIsInV1aWQiOiIwYTI0MTNlZmY4MzQ0MmY0OThjMzg3MzA0MzFmMmMzYyIsImlhdCI6MTYxMjgwNzUyNSwiYWNjb3VudCI6IntcImVtYWlsXCI6XCI5NTMwMDM4NTVAcXEuY29tXCIsXCJnZW5kZXJcIjotMSxcImhhc1Byb25cIjowLFwiaWRcIjo2ODksXCJwYXNzV29yZFwiOlwiMzViNzJiZjVkMjUwN2RiNzc3MzkyY2UzODI5YzNiNWVcIixcInN0YXR1c1wiOjAsXCJ1c2VyTmFtZVwiOlwiTWlhb1hpYW9cIn0iLCJqdGkiOiI2ODkifQ.Ul3rhSNFU978JWNR4U_W3j-lvlnPNFeH57RtrgvxT4U",
+  "acgmx_token": "",
   "proxy": "i.pixiv.cat"
 }

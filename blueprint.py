@@ -1,4 +1,4 @@
-from .bot import get_groups, send_to_group, down_acgmx_img
+from .bot import get_groups, send_to_group, send_to_group_acgmx
 from quart import Blueprint, render_template, request
 import aiohttp
 import os
@@ -79,7 +79,20 @@ async def send():
     return result
 
 
-@bp.route('/acgmx', methods=['POST'])
+@bp.route('/acgmxsend', methods=['POST'])
+async def acgmxsend():
+    form = await request.form
+    url = form['url']
+    pid = form['pid']
+    ori_url = f'https://www.pixiv.net/artworks/{pid}'
+    title = form['title']
+    author = form['author']
+    group_id = int(form['group_id'])
+    result = await send_to_group_acgmx(group_id, url, pid, title, author, ori_url, config['acgmx_token'])
+    return result
+
+
+@bp.route('/acgmx', methods=['GET'])
 async def acgmx():
     headers = {
         'token': config['acgmx_token'],
@@ -91,7 +104,6 @@ async def acgmx():
             res = await res.read()
             res = json.loads(res)
     img_url = res['data']['large']
-    # await down_acgmx_img(img_url, config['acgmx_token'])
     pid = res['data']['illust']
     title = res['data']['title']
     author = res['data']['user']['name']

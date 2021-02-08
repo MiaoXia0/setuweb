@@ -33,7 +33,7 @@
         $("#info" + pid).html("发送中")
         $.ajax({
             type: "post",
-            url: "/setu/send",
+            url: "/setu/acgmxsend",
             dataType: "text",
             data: $("#send" + pid).serialize(),
             success: function(result){
