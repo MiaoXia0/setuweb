@@ -83,8 +83,8 @@ async def send():
 @bp.route('/acgmxsend', methods=['POST'])
 async def acgmxsend():
     form = await request.form
-    url = form['url']
     pid = form['pid']
+    url = form['url']
     ori_url = f'https://www.pixiv.net/artworks/{pid}'
     title = form['title']
     author = form['author']
@@ -114,8 +114,8 @@ async def acgmx():
     img_type = img_url.split('.')[-1]
     pixiv_cat_url = f'https://pixiv.cat/{pid}-{xRestrict}.{img_type}'
     return await render_template('acgmx.html',
-                                 pixiv_cat_url=pixiv_cat_url,
                                  img_url=img_url,
+                                 pixiv_cat_url=pixiv_cat_url,
                                  pid=pid,
                                  title=title,
                                  author=author,

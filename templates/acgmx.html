@@ -10,9 +10,7 @@
     uid: {{uid}}<br />
     标题: {{title}}<br />
     作者: {{author}}<br />
-    原地址: <a href = "https://www.pixiv.net/artworks/{{pid}}">https://www.pixiv.net/artworks/{{pid}}</a><br />
-    链接: <a href="{{img_url}}" target="_blank">{{img_url}}</a><br />
-    <br />
+    原地址: <a href = "https://www.pixiv.net/artworks/{{pid}}" target="_blank">https://www.pixiv.net/artworks/{{pid}}</a><br />
     <form id="send{{pid}}" onsubmit="return false" action="" method="post">
         <input type="hidden" name="url" value="{{img_url}}">
         <input type="hidden" name="pid" value="{{pid}}">

@@ -118,7 +118,7 @@ async def send_to_group_acgmx(group_id: int, url: str, pid: str, title: str, aut
             await down_acgmx_img(url, token)
         print(f'sending {filename}')
         img = R.img(f'setuweb/{filename}').cqcode
-        msg = f'pid: {pid}\n标题: {title}\n作者: {author}\n原地址: {ori_url}\n{url}\n{img}'
+        msg = f'pid: {pid}\n标题: {title}\n作者: {author}\n原地址: {ori_url}\n{img}'
         await bot.send_group_msg(group_id=group_id, message=msg)
         print(f'sended {filename}')
         return f'已发送到群{group_id}！'
