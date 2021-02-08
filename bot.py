@@ -3,6 +3,8 @@ from hoshino import Service, R
 from hoshino.typing import HoshinoBot, CQEvent
 import requests
 import os
+import aiohttp
+
 try:
     import ujson as json
 except ImportError:
@@ -52,14 +54,28 @@ async def setuforbid(bot: HoshinoBot, ev: CQEvent):
     await bot.send(ev, f'已禁止{group_id}')
 
 
+# async def down_img(url: str):
+#     print(f'downloading from {url}')
+#     session = aiohttp.ClientSession()
+#     img = await session.get(url)
+#
+#     filename = url.split('/')[-1]
+#     path = R.img('setuweb/').path
+#     f = open(f'{path}/{filename}', 'wb')
+#     f.write(img.content)
+#     print(f'downloaded {filename}')
+
+
 async def down_img(url: str):
     print(f'downloading from {url}')
-    img = requests.get(url)
     filename = url.split('/')[-1]
     path = R.img('setuweb/').path
+    session = aiohttp.ClientSession()
+    res = await session.get(url)
     f = open(f'{path}/{filename}', 'wb')
-    f.write(img.content)
-    print(f'downloaded {filename}')
+    res = await res.read()
+    f.write(res)
+    await session.close()
 
 
 async def send_to_group(group_id: int, url: str):
