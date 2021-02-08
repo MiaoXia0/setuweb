@@ -25,22 +25,22 @@ async def setuhelp(bot: HoshinoBot, ev: CQEvent):
 
 
 async def down_img(url: str):
-    bot.logger.info('downloading from ' + url)
+    print(f'downloading from {url}')
     img = requests.get(url)
     filename = url.split('/')[-1]
     path = R.img('setuweb/').path
     f = open(f'{path}/{filename}', 'wb')
     f.write(img.content)
-    bot.logger.info('downloaded ' + filename)
+    print(f'downloaded {filename}')
 
 
 async def send_to_group(group_id: int, url: str):
     await down_img(url)
     filename = url.split('/')[-1]
-    bot.logger.info('sending ' + filename)
+    print(f'sending {filename}')
     msg = R.img(f'setuweb/{filename}').cqcode
     await bot.send_group_msg(group_id=group_id, message=msg)
-    bot.logger.info('sended ' + filename)
+    print(f'sended {filename}')
 
 
 def get_groups():
