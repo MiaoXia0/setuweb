@@ -3,8 +3,8 @@
 本插件可调用loliconapi在线查找setu并发送
 ## 安装方法
 1. 在hoshino/modules文件夹下使用git clone本项目
-2. 修改config.json中的apikey(可填写多个)为自己申请的apikey(<https://api.lolicon.app/>)
-3. （可选）config.json中的proxy（代理）
+2. 在config.json中添加(可添加多个)自己申请的apikey(<https://api.lolicon.app/>)
+3. (可选)修改config.json中的proxy（代理）
 4. 在hoshino/config/\_\_bot\_\_.py中添加本插件
 ## 指令说明
 |指令|功能|
