@@ -1,5 +1,5 @@
 from nonebot import get_bot
-from hoshino import Service
+from hoshino import Service, R
 from hoshino.typing import HoshinoBot, CQEvent
 import requests
 
@@ -24,9 +24,23 @@ async def setuhelp(bot: HoshinoBot, ev: CQEvent):
     await bot.send(ev, help_str)
 
 
+async def down_img(url: str):
+    print('downloading from ' + url)
+    img = requests.get(url)
+    filename = url.split('/')[-1]
+    path = R.img('setuweb/').path
+    f = open(f'{path}/{filename}', 'wb')
+    f.write(img.content)
+    print('downloaded ' + filename)
+
+
 async def send_to_group(group_id: int, url: str):
-    msg = f'[CQ:image,file={url}]'
+    await down_img(url)
+    filename = url.split('/')[-1]
+    print('sending ' + filename)
+    msg = R.img(f'setuweb/{filename}').cqcode
     await bot.send_group_msg(group_id=group_id, message=msg)
+    print('sended ' + filename)
 
 
 def get_groups():
