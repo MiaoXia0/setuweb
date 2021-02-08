@@ -16,6 +16,7 @@ if not os.path.exists(allow_path):
     json.dump(allowed_groups, open(allow_path, 'w'))
 else:
     allowed_groups = json.load(open(allow_path, 'r'))
+    print(allowed_groups)
 
 sv = Service('setuweb')
 ip = json.loads(requests.get('https://jsonip.com/').text)['ip']
@@ -74,7 +75,7 @@ async def send_to_group(group_id: int, url: str):
         return '此群不允许发送！'
     else:
         filename = url.split('/')[-1]
-        if not os.path.exists(R.img(f'setuweb/{filename}').file):
+        if not os.path.exists(R.img(f'setuweb/{filename}').path):
             await down_img(url)
         print(f'sending {filename}')
         msg = R.img(f'setuweb/{filename}').cqcode
