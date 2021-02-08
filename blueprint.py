@@ -109,4 +109,4 @@ async def acgmx():
     title = res['data']['title']
     author = res['data']['user']['name']
     uid = res['data']['user']['id']
-    return render_template('acgmx.html', img_url=img_url, pid=pid, title=title, author=author, uid=uid, groups=groups)
+    return await render_template('acgmx.html', img_url=img_url, pid=pid, title=title, author=author, uid=uid, groups=groups)
