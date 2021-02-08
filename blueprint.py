@@ -1,5 +1,3 @@
-import asyncio
-
 from .bot import get_groups, send_to_group
 from quart import Blueprint, render_template, request
 import requests
@@ -64,5 +62,5 @@ async def send():
     form = await request.form
     url = form['url']
     group_id = int(form['group_id'])
-    result = asyncio.run(send_to_group(group_id, url))
+    result = await send_to_group(group_id, url)
     return result

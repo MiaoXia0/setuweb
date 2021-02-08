@@ -3,7 +3,6 @@ from hoshino import Service, R
 from hoshino.typing import HoshinoBot, CQEvent
 import requests
 import os
-import asyncio
 try:
     import ujson as json
 except ImportError:
