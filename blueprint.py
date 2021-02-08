@@ -108,13 +108,17 @@ async def acgmx():
             res = json.loads(res)
     img_url = res['data']['large']
     pid = res['data']['illust']
+    pageCount = res['data']['pageCount']
     xRestrict = res['data']['xRestrict']
     restrict = res['data']['restrict']
     title = res['data']['title']
     author = res['data']['user']['name']
     uid = res['data']['user']['id']
     img_type = img_url.split('.')[-1]
-    pixiv_cat_url = f'https://pixiv.cat/{pid}-{xRestrict}.{img_type}'
+    if pageCount == 1:
+        pixiv_cat_url = f'https://pixiv.cat/{pid}.{img_type}'
+    else:
+        pixiv_cat_url = f'https://pixiv.cat/{pid}-{xRestrict}.{img_type}'
     return await render_template('acgmx.html',
                                  img_url=img_url,
                                  pixiv_cat_url=pixiv_cat_url,
