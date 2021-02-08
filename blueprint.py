@@ -94,6 +94,7 @@ async def acgmxsend():
 
 @bp.route('/acgmx', methods=['GET'])
 async def acgmx():
+    groups = await get_groups()
     headers = {
         'token': config['acgmx_token'],
         'referer': 'https://www.acgmx.com/'
@@ -108,4 +109,4 @@ async def acgmx():
     title = res['data']['title']
     author = res['data']['user']['name']
     uid = res['data']['user']['id']
-    return render_template('acgmx.html', img_url=img_url, pid=pid, title=title, author=author, uid=uid)
+    return render_template('acgmx.html', img_url=img_url, pid=pid, title=title, author=author, uid=uid, groups=groups)
