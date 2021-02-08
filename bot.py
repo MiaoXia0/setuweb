@@ -54,18 +54,6 @@ async def setuforbid(bot: HoshinoBot, ev: CQEvent):
     await bot.send(ev, f'已禁止{group_id}')
 
 
-# async def down_img(url: str):
-#     print(f'downloading from {url}')
-#     session = aiohttp.ClientSession()
-#     img = await session.get(url)
-#
-#     filename = url.split('/')[-1]
-#     path = R.img('setuweb/').path
-#     f = open(f'{path}/{filename}', 'wb')
-#     f.write(img.content)
-#     print(f'downloaded {filename}')
-
-
 async def down_img(url: str):
     print(f'downloading from {url}')
     filename = url.split('/')[-1]
@@ -85,8 +73,9 @@ async def send_to_group(group_id: int, url: str):
     except KeyError:
         return '此群不允许发送！'
     else:
-        await down_img(url)
         filename = url.split('/')[-1]
+        if not os.path.exists(R.img(f'setuweb/{filename}').file):
+            await down_img(url)
         print(f'sending {filename}')
         msg = R.img(f'setuweb/{filename}').cqcode
         await bot.send_group_msg(group_id=group_id, message=msg)
