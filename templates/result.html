@@ -58,7 +58,7 @@
             data: $("#send" + pid).serialize(),
             success: function(result){
                 console.log(result)
-                $("#info" + pid).html("发送成功")
+                $("#info" + pid).html(result)
             },
             error: function(){
                 console.log("异常！")
