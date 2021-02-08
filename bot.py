@@ -10,9 +10,14 @@ sv = Service('setuweb')
 ip = json.loads(requests.get('https://jsonip.com/').text)['ip']
 bot = get_bot()
 port = bot.config.PORT
-help_str = f'''本插件为在线setu插件
-进入http://{ip}:{port}/setu/开始使用本插件
-'''
+if port == 80:
+    help_str = f'''本插件为在线setu插件
+        进入http://{ip}/setu/开始使用本插件
+        '''
+else:
+    help_str = f'''本插件为在线setu插件
+        进入http://{ip}:{port}/setu/开始使用本插件
+        '''
 
 
 @sv.on_fullmatch('setuhelp')
