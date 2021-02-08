@@ -1,14 +1,20 @@
 from nonebot import get_bot
 from hoshino import Service, R
 from hoshino.typing import HoshinoBot, CQEvent
-from .__init__ import allowed_groups, allow_path
 import requests
+import os
 try:
     import ujson as json
 except ImportError:
     import json
 
-allowed = allowed_groups
+allow_path = os.path.dirname(__file__) + '/allowed_groups.json'
+if not os.path.exists(allow_path):
+    allowed_groups = {}
+    json.dump(allowed_groups, open(allow_path, 'w'))
+else:
+    allowed_groups = json.load(open(allow_path, 'r'))
+
 sv = Service('setuweb')
 ip = json.loads(requests.get('https://jsonip.com/').text)['ip']
 bot = get_bot()
@@ -33,16 +39,16 @@ async def setuhelp(bot: HoshinoBot, ev: CQEvent):
 @sv.on_fullmatch('setuallow')
 async def setuallow(bot: HoshinoBot, ev: CQEvent):
     group_id = ev.group_id
-    allowed[group_id] = True
-    json.dump(allowed, open(allow_path, 'w'))
+    allowed_groups[group_id] = True
+    json.dump(allowed_groups, open(allow_path, 'w'))
     await bot.send(ev, f'已允许{group_id}')
 
 
 @sv.on_fullmatch('setuforbid')
 async def setuforbid(bot: HoshinoBot, ev: CQEvent):
     group_id = ev.group_id
-    allowed[group_id] = False
-    json.dump(allowed, open(allow_path, 'w'))
+    allowed_groups[group_id] = False
+    json.dump(allowed_groups, open(allow_path, 'w'))
     await bot.send(ev, f'已禁止{group_id}')
 
 
