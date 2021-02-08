@@ -69,7 +69,7 @@ async def down_img(url: str):
 
 async def send_to_group(group_id: int, url: str):
     try:
-        if not allowed_groups[group_id]:
+        if not allowed_groups[str(group_id)]:
             return '此群不允许发送！'
     except KeyError:
         return '此群不允许发送！'
