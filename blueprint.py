@@ -115,7 +115,7 @@ async def acgmx():
     author = res['data']['user']['name']
     uid = res['data']['user']['id']
     img_type = img_url.split('.')[-1]
-    if pageCount == 1:
+    if pageCount == '1':
         pixiv_cat_url = f'https://pixiv.cat/{pid}.{img_type}'
     else:
         pixiv_cat_url = f'https://pixiv.cat/{pid}-{xRestrict}.{img_type}'
