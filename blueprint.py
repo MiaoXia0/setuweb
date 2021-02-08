@@ -70,8 +70,9 @@ async def send():
     url = form['url']
     pid = form['pid']
     p = form['p']
+    ori_url = f'https://www.pixiv.net/artworks/{pid}'
     title = form['title']
     author = form['author']
     group_id = int(form['group_id'])
-    result = await send_to_group(group_id, url, pid, p, title, author)
+    result = await send_to_group(group_id, url, pid, p, title, author, ori_url)
     return result
