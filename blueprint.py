@@ -21,23 +21,24 @@ async def setuindex():
 @bp.route('/result', methods=['POST'])
 async def seturesult():
     groups = await get_groups()
-    keyword = request.form['keyword']
+    form = await request.form
+    keyword = form['keyword']
     if keyword == '':
         kwargs = {
             'apikey': config['apikey'],
             'proxy': config['proxy'],
-            'r18': request.form['r18'],
-            'num': request.form['num'],
-            'size1200': request.form['size1200'],
+            'r18': form['r18'],
+            'num': form['num'],
+            'size1200': form['size1200'],
         }
     else:
         kwargs = {
             'apikey': config['apikey'],
             'proxy': config['proxy'],
             'keyword': keyword,
-            'r18': request.form['r18'],
-            'num': request.form['num'],
-            'size1200': request.form['size1200'],
+            'r18': form['r18'],
+            'num': form['num'],
+            'size1200': form['size1200'],
         }
     rq = requests.get('https://api.lolicon.app/setu/', kwargs)
     result = json.loads(rq.text)
