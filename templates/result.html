@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Setu!</title>
+    <script src="/setu/static/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+    {% if code != 0 %}
+    失败
+    {{msg}}
+    {% else %}
+        <div style="display:none">
+            成功!
+            API剩余调用额度: {{quota}}<br />
+            下次调用额度恢复时间: {{quota_min_ttl}}秒<br />
+        </div>
+        数量: {{count}}<br />
+        {% for setu in data %}
+            pid: {{setu['pid']}}
+            第{{setu['p']}}p<br />
+            uid: {{setu['uid']}}<br />
+            标题: {{setu['title']}}<br />
+            作者: {{setu['author']}}<br />
+            链接: <a href="{{setu['url']}}" target="_blank">{{setu['url']}}</a><br />
+            r18:
+            {% if setu['r18'] %}
+                是
+            {% else %}
+                否
+            {% endif %}
+            <br />
+            图片尺寸: {{setu['height']}}*{{setu['width']}}<br />
+            Tags:
+            {% for tag in setu['tags'] %}
+                {{tag}}
+            {% endfor %}
+            <br />
+            <form id="send{{setu['pid']}}" onsubmit="return false" action="" method="post">
+                <input type="hidden" name="url" value="{{setu['url']}}">
+                <select name="group_id">
+                {% for group in groups %}
+                    <option value="{{group['group_id']}}">{{group['group_name']}}({{group['group_id']}})</option>
+                {% endfor %}
+                </select>
+                <button onClick="send({{setu['pid']}})">发送到群</button><div id="info{{setu['pid']}}"></div>
+            </form>
+            <div><img style="width:100%; height:100%" src="{{setu['url']}}"></div>
+        {% endfor %}
+    {% endif %}
+<script>
+    function send(pid) {
+        $("#info" + pid).html("发送中")
+        $.ajax({
+            type: "post",
+            url: "/setu/send",
+            dataType: "text",
+            data: $("#send" + pid).serialize(),
+            success: function(result){
+                console.log(result)
+                $("#info" + pid).html("发送成功")
+            },
+            error: function(){
+                console.log("异常！")
+                $("#info" + pid).html("发送失败")
+            }
+        });
+    }
+</script>
+</body>
+</html>
