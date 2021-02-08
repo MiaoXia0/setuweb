@@ -14,4 +14,6 @@
 |groupforbid|禁止当前群发送setu|
 groupallow和groupforbid只有管理员以上及主人才能使用\
 本插件图片发送前下载至资源文件夹中img/setuweb\
-若图片已存在不下载直接发送
+若图片已存在不下载直接发送\
+若有多个apikey 失败时将自动切换\
+若全部失败 显示最后一个的失败信息
