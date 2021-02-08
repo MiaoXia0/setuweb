@@ -23,32 +23,39 @@ async def seturesult():
     form = await request.form
     groups = await get_groups()
     keyword = form['keyword']
-    if keyword == '':
-        kwargs = {
-            'apikey': config['apikey'],
-            'proxy': config['proxy'],
-            'r18': form['r18'],
-            'num': form['num'],
-            'size1200': form['size1200'],
-        }
-    else:
-        kwargs = {
-            'apikey': config['apikey'],
-            'proxy': config['proxy'],
-            'keyword': keyword,
-            'r18': form['r18'],
-            'num': form['num'],
-            'size1200': form['size1200'],
-        }
-    rq = requests.get('https://api.lolicon.app/setu/', kwargs)
-    result = json.loads(rq.text)
+    apikeys = config['apikey']
+    result = {}
+    code = -1
+    for apikey in apikeys:
+        if keyword == '':
+            kwargs = {
+                'apikey': apikey,
+                'proxy': config['proxy'],
+                'r18': form['r18'],
+                'num': form['num'],
+                'size1200': form['size1200'],
+            }
+        else:
+            kwargs = {
+                'apikey': config['apikey'],
+                'proxy': config['proxy'],
+                'keyword': keyword,
+                'r18': form['r18'],
+                'num': form['num'],
+                'size1200': form['size1200'],
+            }
+        rq = requests.get('https://api.lolicon.app/setu/', kwargs)
+        result = json.loads(rq.text)
+        code = result['code']
+        if code == 0:
+            break
     msg = result['msg']
     quota = result['quota']
     quota_min_ttl = result['quota_min_ttl']
     count = result['count']
     data = result['data']
     return await render_template('result.html',
-                                 code=result['code'],
+                                 code=code,
                                  msg=msg,
                                  quota=quota,
                                  quota_min_ttl=quota_min_ttl,
