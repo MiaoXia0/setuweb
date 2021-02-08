@@ -12,6 +12,7 @@
 |setuhelp|查看帮助|
 |groupallow|允许当前群发送setu|
 |groupforbid|禁止当前群发送setu|
+
 groupallow和groupforbid只有管理员以上及主人才能使用\
 本插件图片发送前下载至资源文件夹中img/setuweb\
 若图片已存在不下载直接发送\
