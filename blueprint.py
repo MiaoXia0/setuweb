@@ -18,26 +18,26 @@ async def setuindex():
     return await render_template('index.html')
 
 
-@bp.route('/result', methods=['GET'])
+@bp.route('/result', methods=['POST'])
 async def seturesult():
     groups = await get_groups()
-    keyword = request.args['keyword']
+    keyword = request.form['keyword']
     if keyword == '':
         kwargs = {
             'apikey': config['apikey'],
             'proxy': config['proxy'],
-            'r18': request.args['r18'],
-            'num': request.args['num'],
-            'size1200': request.args['size1200'],
+            'r18': request.form['r18'],
+            'num': request.form['num'],
+            'size1200': request.form['size1200'],
         }
     else:
         kwargs = {
             'apikey': config['apikey'],
             'proxy': config['proxy'],
             'keyword': keyword,
-            'r18': request.args['r18'],
-            'num': request.args['num'],
-            'size1200': request.args['size1200'],
+            'r18': request.form['r18'],
+            'num': request.form['num'],
+            'size1200': request.form['size1200'],
         }
     rq = requests.get('https://api.lolicon.app/setu/', kwargs)
     result = json.loads(rq.text)
