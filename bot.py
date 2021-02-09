@@ -151,9 +151,11 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
                     result = await rq.read()
                     result = json.loads(result)
             code = result['code']
-            if code == 0:
+            if code == 0 or code == 404:
                 break
-        if code != 0:
+        if code == 404:
+            await bot.send(ev, '找不到此关键字的色图')
+        elif code != 0:
             await bot.send(ev, 'setu获取失败')
         else:
             data = result['data']
