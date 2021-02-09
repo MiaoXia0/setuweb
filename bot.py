@@ -1,7 +1,7 @@
 from nonebot import get_bot
 from hoshino import Service, R
 from hoshino.typing import HoshinoBot, CQEvent
-from hoshino.priv import ADMIN, check_priv
+from hoshino.priv import check_priv, ADMIN, SUPERUSER
 import requests
 import os
 import aiohttp
@@ -132,6 +132,9 @@ async def withdrawoff(bot: HoshinoBot, ev: CQEvent):
 
 @sv.on_prefix('setwithdraw')
 async def setwithdraw(bot: HoshinoBot, ev: CQEvent):
+    if not check_priv(ev, SUPERUSER):
+        await bot.send(ev, f'机器人主人才能使用')
+        return
     time = ev.message.extract_plain_text()
     try:
         time = int(time)
