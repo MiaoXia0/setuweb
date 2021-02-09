@@ -3,5 +3,6 @@
   "size1200": true,
   "proxy": "i.pixiv.cat",
   "acgmx_token": "",
-  "group_api": "lolicon"
+  "group_api": "lolicon",
+  "withdraw": 60
 }

@@ -56,7 +56,7 @@
     {% endif %}
 <script>
     function send(pid) {
-        $("#info" + pid).html("发送中")
+        $("#info" + pid).html("发送中或准备撤回")
         $.ajax({
             type: "post",
             url: "/setu/send",

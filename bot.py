@@ -5,6 +5,7 @@ from hoshino.priv import ADMIN, check_priv
 import requests
 import os
 import aiohttp
+import asyncio
 
 try:
     import ujson as json
@@ -17,7 +18,6 @@ if not os.path.exists(allow_path):
     json.dump(allowed_groups, open(allow_path, 'w'))
 else:
     allowed_groups = json.load(open(allow_path, 'r'))
-    print(allowed_groups)
 
 r18_path = os.path.dirname(__file__) + '/r18_groups.json'
 if not os.path.exists(r18_path):
@@ -25,7 +25,14 @@ if not os.path.exists(r18_path):
     json.dump(r18_groups, open(r18_path, 'w'))
 else:
     r18_groups = json.load(open(r18_path, 'r'))
-    print(r18_groups)
+
+
+withdraw_path = os.path.dirname(__file__) + '/withdraw_groups.json'
+if not os.path.exists(withdraw_path):
+    withdraw_groups = {}
+    json.dump(withdraw_groups, open(withdraw_path, 'w'))
+else:
+    withdraw_groups = json.load(open(withdraw_path, 'r'))
 
 
 sv = Service('setuweb')
@@ -94,6 +101,29 @@ async def setuforbid(bot: HoshinoBot, ev: CQEvent):
     r18_groups[str(group_id)] = False
     json.dump(r18_groups, open(r18_path, 'w'))
     await bot.send(ev, f'已禁止{group_id}r18')
+
+
+@sv.on_fullmatch('withdrawon')
+async def setuforbid(bot: HoshinoBot, ev: CQEvent):
+    if not check_priv(ev, ADMIN):
+        await bot.send(ev, f'管理员以上才能使用')
+        return
+    group_id = ev.group_id
+    withdraw_groups[str(group_id)] = True
+    json.dump(withdraw_groups, open(withdraw_path, 'w'))
+    await bot.send(ev, f'已开启{group_id}撤回')
+
+
+@sv.on_fullmatch('withdrawoff')
+async def setuforbid(bot: HoshinoBot, ev: CQEvent):
+    if not check_priv(ev, ADMIN):
+        await bot.send(ev, f'管理员以上才能使用')
+        return
+    group_id = ev.group_id
+    withdraw_groups[str(group_id)] = False
+    json.dump(withdraw_groups, open(withdraw_path, 'w'))
+    await bot.send(ev, f'已关闭{group_id}撤回')
+
 
 
 @sv.on_rex(r'^[来发给](\d*)?[份点张幅]([Rr]18)?(.*)?[涩瑟色]图$')
@@ -166,7 +196,8 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
                 title = setu['title']
                 author = setu['author']
                 ori_url = f'https://www.pixiv.net/artworks/{pid}'
-                await send_to_group(ev.group_id, url, pid, p, title, author, ori_url, r18)
+                await send_to_group(ev.group_id, url, pid, p, title, author, ori_url, bool(r18))
+
     elif config['group_api'] == 'acgmx':
         await bot.send_group_msg(group_id=group_id, message='获取中')
         headers = {
@@ -213,6 +244,13 @@ async def down_acgmx_img(url: str, token: str):
         f.write(res)
 
 
+async def format_msg(url: str, pid: str, p: str, title: str, author: str, ori_url: str):
+    filename = url.split('/')[-1]
+    img = R.img(f'setuweb/{filename}').cqcode
+    msg = f'pid: {pid} p{p}\n标题: {title}\n作者: {author}\n原地址: {ori_url}\n{url}\n{img}'
+    return msg
+
+
 async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, author: str, ori_url: str, r18: bool):
     try:
         if not allowed_groups[str(group_id)]:
@@ -228,11 +266,22 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
     filename = url.split('/')[-1]
     if not os.path.exists(R.img(f'setuweb/{filename}').path):
         await down_img(url)
-    print(f'sending {filename}')
-    img = R.img(f'setuweb/{filename}').cqcode
-    msg = f'pid: {pid} p{p}\n标题: {title}\n作者: {author}\n原地址: {ori_url}\n{url}\n{img}'
-    await bot.send_group_msg(group_id=group_id, message=msg)
-    print(f'sended {filename}')
+    msg = await format_msg(url, pid, p, title, author, ori_url)
+    result = await bot.send_group_msg(group_id=group_id, message=msg)
+    withdraw = int(config['withdraw'])
+    ifwithdraw = True
+    try:
+        if not withdraw_groups[str(group_id)]:
+            ifwithdraw = False
+    except KeyError:
+        ifwithdraw = False
+    if ifwithdraw and withdraw and withdraw > 0:
+        print(f'{withdraw}秒后撤回')
+        await asyncio.sleep(withdraw)
+        print(f'准备撤回')
+        await bot.delete_msg(message_id=result['message_id'])
+        print(f'已撤回')
+        return f'已撤回！'
     return f'已发送到群{group_id}！'
 
 
@@ -246,9 +295,7 @@ async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: 
         filename = url.split('/')[-1]
         if not os.path.exists(R.img(f'setuweb/{filename}').path):
             await down_acgmx_img(url, token)
-        print(f'sending {filename}')
-        img = R.img(f'setuweb/{filename}').cqcode
-        msg = f'pid: {pid} p{p}\n标题: {title}\n作者: {author}\n原地址: {ori_url}\n{img}'
+        msg = await format_msg(url, pid, p, title, author, ori_url)
         await bot.send_group_msg(group_id=group_id, message=msg)
         print(f'sended {filename}')
         return f'已发送到群{group_id}！'

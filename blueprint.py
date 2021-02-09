@@ -2,7 +2,7 @@ from .bot import get_groups, send_to_group, send_to_group_acgmx
 from quart import Blueprint, render_template, request
 import aiohttp
 import os
-
+import asyncio
 try:
     import ujson as json
 except ImportError:
