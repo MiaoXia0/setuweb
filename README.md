@@ -21,14 +21,15 @@
 |groupforbid|禁止当前群发送setu|
 |r18allow|允许当前群发送r18setu|
 |r18forbid|禁止当前群发送r18setu|
-|withdrawon|开启本群撤回|
-|withdrawoff|关闭本群撤回|
+|withdrawon|开启当前群撤回|
+|withdrawoff|关闭当前群撤回|
 |setwithdraw|时间设置撤回时间(秒)|
 |来\\发\\给(数量)份\\点\\张\\幅(R\\r18)(关键字)\\涩\\瑟\\色图|群内色图括号内容可选|
 
 groupallow和groupforbid只有管理员以上及主人才能使用\
 r18选项仅对lolicon api有效\
-撤回时间默认60秒 设为0为全局关闭撤回
+群内撤回默认关闭\
+撤回时间默认60秒 设为0为全局关闭撤回\
 本插件图片发送前下载至资源文件夹中img/setuweb\
 若图片已存在不下载直接发送\
 若有多个lolicon apikey 失败时将自动切换\
