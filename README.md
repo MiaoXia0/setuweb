@@ -18,7 +18,7 @@
 |来\\发\\给(数量)份\\点\\张\\幅(R\\r18)(关键字)\\涩\\瑟\\色图|群内色图括号内容可选|
 
 groupallow和groupforbid只有管理员以上及主人才能使用\
-r18选项仅对lolicon api有效
+r18选项仅对lolicon api有效\
 本插件图片发送前下载至资源文件夹中img/setuweb\
 若图片已存在不下载直接发送\
 若有多个lolicon apikey 失败时将自动切换\
