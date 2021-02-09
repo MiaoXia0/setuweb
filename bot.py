@@ -43,7 +43,8 @@ else:
 help_str = f'''本插件为在线setu插件
 进入{setu_url}开始使用本插件
 输入setu/r18allow允许本群发送色图/r18色图
-输入setu/r18forbid禁止本群发送色图/r18色图'''
+输入setu/r18forbid禁止本群发送色图/r18色图
+输入来\\发\\给(数量)份\\点\\张\\幅(R\\r18)(关键字)\\涩\\瑟\\色图 在群内获取色图'''
 
 
 @sv.on_fullmatch('setuhelp')
