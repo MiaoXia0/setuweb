@@ -25,8 +25,8 @@
 |指令|功能|
 |---|---|
 |setuhelp|查看帮助|
-|groupallow|允许当前群发送setu|
-|groupforbid|禁止当前群发送setu|
+|setuallow|允许当前群发送setu|
+|setuforbid|禁止当前群发送setu|
 |r18allow|允许当前群发送r18setu|
 |r18forbid|禁止当前群发送r18setu|
 |withdrawon|开启当前群撤回|
