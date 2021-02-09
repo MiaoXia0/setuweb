@@ -22,7 +22,7 @@
 
 groupallow和groupforbid只有管理员以上及主人才能使用\
 r18选项仅对lolicon api有效\
-撤回时间设为0为全局关闭撤回
+撤回时间默认60秒 设为0为全局关闭撤回
 本插件图片发送前下载至资源文件夹中img/setuweb\
 若图片已存在不下载直接发送\
 若有多个lolicon apikey 失败时将自动切换\
