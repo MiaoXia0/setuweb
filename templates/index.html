@@ -34,10 +34,10 @@
 </body>
 <script>
     $("#api").change(function(){
-        if(this.val() == "lolicon"){
+        if($(this).val() == "lolicon"){
             $(".lolicon").show();
             $(".acgmx").hide();
-        }else if(this.val() == "acgmx"){
+        }else if($(this).val() == "acgmx"){
             $(".acgmx").show();
             $(".lolicon").hide();
         }
