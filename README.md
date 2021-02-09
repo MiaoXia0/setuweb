@@ -44,5 +44,6 @@ r18选项仅对lolicon api有效\
 |proxy|lolicon.app的代理|字符串|
 |acgmx_token|acgmx的token|字符串|
 |group_api|群内触发setu所用的api|字符串("lolicon"/"acgmx")|
+|withdraw|撤回时间 0为全局关闭|整数|
 
 group_api为acg_mx时只能获取单张随机setu 
