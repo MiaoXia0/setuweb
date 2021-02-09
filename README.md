@@ -1,12 +1,18 @@
 # Hoshinobot 在线setu插件
 ## 简介
-本插件可调用loliconapi在线查找setu并发送
+本插件可调用lolicon api或acgmx api查找setu并可发送到bot所在群中\
+支持在线查找以及群内调用\
+在线使用地址为http://bot地址/setu
+可通过setuhelp指令获取\
+群内使用方法见指令说明
+
 ## 安装方法
 1. 在hoshino/modules文件夹下使用git clone本项目
 2. 在config.json中添加(可添加多个)lolicon的apikey(<https://api.lolicon.app/>)
 3. 在config.json中添加acgmx的apikey(<https://www.acgmx.com/>)
 4. (可选)修改config.json中的proxy（代理）
 5. 在hoshino/config/\_\_bot\_\_.py中添加本插件
+
 ## 指令说明
 |指令|功能|
 |---|---|
@@ -27,7 +33,6 @@ r18选项仅对lolicon api有效\
 若图片已存在不下载直接发送\
 若有多个lolicon apikey 失败时将自动切换\
 若全部失败 显示最后一个的失败信息
-
 
 ## config说明
 |key|value|类型|
