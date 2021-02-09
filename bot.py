@@ -46,7 +46,7 @@ async def setuallow(bot: HoshinoBot, ev: CQEvent):
         await bot.send(ev, f'管理员以上才能使用')
         return
     group_id = ev.group_id
-    allowed_groups[group_id] = True
+    allowed_groups[str(group_id)] = True
     json.dump(allowed_groups, open(allow_path, 'w'))
     await bot.send(ev, f'已允许{group_id}')
 
@@ -57,7 +57,7 @@ async def setuforbid(bot: HoshinoBot, ev: CQEvent):
         await bot.send(ev, f'管理员以上才能使用')
         return
     group_id = ev.group_id
-    allowed_groups[group_id] = False
+    allowed_groups[str(group_id)] = False
     json.dump(allowed_groups, open(allow_path, 'w'))
     await bot.send(ev, f'已禁止{group_id}')
 
