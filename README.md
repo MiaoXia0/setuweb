@@ -6,7 +6,13 @@
 可通过setuhelp指令获取\
 群内使用方法见指令说明
 支持私聊（需魔改Hoshinobot源码）\
-私聊不撤回，不检测r18
+私聊不撤回，不检测r18\
+
+### Hoshinobot魔改
+
+1. 在priv.py中找到不允许私聊的注释(第78行)将False改为True
+2. 找到msghandler.py中第8行的if event.detail_type != 'group':\
+下一行的return改为pass 或者删除整个if块(第8行, 第9行)
 
 ## 安装方法
 1. 在hoshino/modules文件夹下使用git clone本项目
