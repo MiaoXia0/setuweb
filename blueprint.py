@@ -10,7 +10,7 @@ except ImportError:
 
 curr_dir = os.path.dirname(__file__)
 bp = Blueprint('setu', 'setuweb', static_folder=f'{curr_dir}/static', template_folder=f'{curr_dir}/templates')
-config = json.load(open(f'{curr_dir}/config.json'))
+config = json.load(open(f'{curr_dir}/config.json', 'r'))
 
 
 @bp.route('/', methods=['GET'])

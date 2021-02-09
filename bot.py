@@ -40,7 +40,7 @@ ip = json.loads(requests.get('https://jsonip.com/').text)['ip']
 bot = get_bot()
 port = bot.config.PORT
 curr_dir = os.path.dirname(__file__)
-config = json.load(open(f'{curr_dir}/config.json'))
+config = json.load(open(f'{curr_dir}/config.json', 'r'))
 
 if port == 80:
     setu_url = f'http://{ip}/setu/'
@@ -49,8 +49,13 @@ else:
 
 help_str = f'''本插件为在线setu插件
 进入{setu_url}开始使用本插件
-输入setu/r18allow允许本群发送色图/r18色图
-输入setu/r18forbid禁止本群发送色图/r18色图
+输入setuallow允许本群发送色图
+输入setuforbid禁止本群发送色图
+输入r18allow允许本群发送r18色图
+输入r18forbid禁止本群发送r18色图
+输入withdrawon开启本群撤回
+输入withdrawoff关闭本群撤回
+输入setwithdraw+时间设置撤回时间(秒) 0为全局关闭撤回
 输入来\\发\\给(数量)份\\点\\张\\幅(R\\r18)(关键字)\\涩\\瑟\\色图 在群内获取色图'''
 
 
@@ -104,7 +109,7 @@ async def setuforbid(bot: HoshinoBot, ev: CQEvent):
 
 
 @sv.on_fullmatch('withdrawon')
-async def setuforbid(bot: HoshinoBot, ev: CQEvent):
+async def withdrawon(bot: HoshinoBot, ev: CQEvent):
     if not check_priv(ev, ADMIN):
         await bot.send(ev, f'管理员以上才能使用')
         return
@@ -115,7 +120,7 @@ async def setuforbid(bot: HoshinoBot, ev: CQEvent):
 
 
 @sv.on_fullmatch('withdrawoff')
-async def setuforbid(bot: HoshinoBot, ev: CQEvent):
+async def withdrawoff(bot: HoshinoBot, ev: CQEvent):
     if not check_priv(ev, ADMIN):
         await bot.send(ev, f'管理员以上才能使用')
         return
@@ -124,6 +129,21 @@ async def setuforbid(bot: HoshinoBot, ev: CQEvent):
     json.dump(withdraw_groups, open(withdraw_path, 'w'))
     await bot.send(ev, f'已关闭{group_id}撤回')
 
+
+@sv.on_prefix('setwithdraw')
+async def setwithdraw(bot: HoshinoBot, ev: CQEvent):
+    time = ev.message.extract_plain_text()
+    try:
+        time = int(time)
+    except ValueError:
+        await bot.send(ev, '请输入setwithdraw+数字')
+        return
+    if time < 0:
+        await bot.send(ev, '请输入setwithdraw+大于0的数字')
+        return
+    config['withdraw'] = time
+    json.dump(config, open(f'{curr_dir}/config.json', 'w'))
+    await bot.send(ev, f'已设置撤回时间为{time}秒')
 
 
 @sv.on_rex(r'^[来发给](\d*)?[份点张幅]([Rr]18)?(.*)?[涩瑟色]图$')
@@ -281,7 +301,7 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
         print(f'准备撤回')
         await bot.delete_msg(message_id=result['message_id'])
         print(f'已撤回')
-        return f'已撤回！'
+        return f'已发送到群{group_id}并撤回！'
     return f'已发送到群{group_id}！'
 
 
