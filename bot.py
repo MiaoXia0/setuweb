@@ -219,7 +219,11 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
                 title = setu['title']
                 author = setu['author']
                 ori_url = f'https://www.pixiv.net/artworks/{pid}'
-                await send_to_group(ev.group_id, url, pid, p, title, author, ori_url, bool(r18))
+                if ev['message_type'] == 'group':
+                    await send_to_group(ev.group_id, url, pid, p, title, author, ori_url, bool(r18))
+                else:
+                    await send_to_private(ev.user_id, url, pid, p, title, author, ori_url)
+
 
     elif config['group_api'] == 'acgmx':
         await bot.send_group_msg(group_id=group_id, message='获取中')
@@ -238,7 +242,10 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
         title = res['data']['title']
         author = res['data']['user']['name']
         ori_url = f'https://www.pixiv.net/artworks/{pid}'
-        await send_to_group_acgmx(ev.group_id, img_url, pid, restrict, title, author, ori_url, config['acgmx_token'])
+        if ev['message_type'] == 'group':
+            await send_to_group_acgmx(ev.group_id, img_url, pid, restrict, title, author, ori_url, config['acgmx_token'])
+        else:
+            await send_to_private_acgmx(ev.user_id, url, pid, restrict, title, author, ori_url, config['acgmx_token'])
 
 
 async def down_img(url: str):
@@ -322,6 +329,22 @@ async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: 
         await bot.send_group_msg(group_id=group_id, message=msg)
         print(f'sended {filename}')
         return f'已发送到群{group_id}！'
+
+
+async def send_to_private(user_id: int, url: str, pid: str, p: str, title: str, author: str, ori_url: str):
+    filename = url.split('/')[-1]
+    if not os.path.exists(R.img(f'setuweb/{filename}').path):
+        await down_img(url)
+    msg = await format_msg(url, pid, p, title, author, ori_url)
+    await bot.send_private_msg(user_id=user_id, message=msg)
+
+
+async def send_to_private_acgmx(user_id: int, url: str, pid: str, p: str, title: str, author: str, ori_url: str, token: str):
+    filename = url.split('/')[-1]
+    if not os.path.exists(R.img(f'setuweb/{filename}').path):
+        await down_acgmx_img(url, token)
+    msg = await format_msg(url, pid, p, title, author, ori_url)
+    await bot.send_private_msg(user_id=user_id, message=msg)
 
 
 def get_groups():
