@@ -66,6 +66,8 @@ async def setuhelp(bot: HoshinoBot, ev: CQEvent):
 
 @sv.on_fullmatch('setuallow')
 async def setuallow(bot: HoshinoBot, ev: CQEvent):
+    if ev['message_type'] != 'group':
+        return
     if not check_priv(ev, ADMIN):
         await bot.send(ev, f'管理员以上才能使用')
         return
@@ -77,6 +79,8 @@ async def setuallow(bot: HoshinoBot, ev: CQEvent):
 
 @sv.on_fullmatch('setuforbid')
 async def setuforbid(bot: HoshinoBot, ev: CQEvent):
+    if ev['message_type'] != 'group':
+        return
     if not check_priv(ev, ADMIN):
         await bot.send(ev, f'管理员以上才能使用')
         return
@@ -88,6 +92,8 @@ async def setuforbid(bot: HoshinoBot, ev: CQEvent):
 
 @sv.on_fullmatch('r18allow')
 async def setuallow(bot: HoshinoBot, ev: CQEvent):
+    if ev['message_type'] != 'group':
+        return
     if not check_priv(ev, ADMIN):
         await bot.send(ev, f'管理员以上才能使用')
         return
@@ -99,6 +105,8 @@ async def setuallow(bot: HoshinoBot, ev: CQEvent):
 
 @sv.on_fullmatch('r18forbid')
 async def setuforbid(bot: HoshinoBot, ev: CQEvent):
+    if ev['message_type'] != 'group':
+        return
     if not check_priv(ev, ADMIN):
         await bot.send(ev, f'管理员以上才能使用')
         return
@@ -110,6 +118,8 @@ async def setuforbid(bot: HoshinoBot, ev: CQEvent):
 
 @sv.on_fullmatch('withdrawon')
 async def withdrawon(bot: HoshinoBot, ev: CQEvent):
+    if ev['message_type'] != 'group':
+        return
     if not check_priv(ev, ADMIN):
         await bot.send(ev, f'管理员以上才能使用')
         return
@@ -121,6 +131,8 @@ async def withdrawon(bot: HoshinoBot, ev: CQEvent):
 
 @sv.on_fullmatch('withdrawoff')
 async def withdrawoff(bot: HoshinoBot, ev: CQEvent):
+    if ev['message_type'] != 'group':
+        return
     if not check_priv(ev, ADMIN):
         await bot.send(ev, f'管理员以上才能使用')
         return
