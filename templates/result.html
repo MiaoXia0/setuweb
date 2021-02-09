@@ -19,6 +19,7 @@
         {% for setu in data %}
             pid: {{setu['pid']}} p{{setu['p']}}<br />
             uid: {{setu['uid']}}<br />
+            r18: {% if setu['r18'] %}是{% else %}否{% endif %}<br />
             标题: {{setu['title']}}<br />
             作者: {{setu['author']}}<br />
             原地址: <a href = "https://www.pixiv.net/artworks/{{setu['pid']}}" target="_blank">https://www.pixiv.net/artworks/{{setu['pid']}}</a><br />
@@ -42,6 +43,7 @@
                 <input type="hidden" name="p" value="{{setu['p']}}">
                 <input type="hidden" name="title" value="{{setu['title']}}">
                 <input type="hidden" name="author" value="{{setu['author']}}">
+                <input type="hidden" name="r18" value="{{setu['r18']}}">
                 <select name="group_id">
                 {% for group in groups %}
                     <option value="{{group['group_id']}}">{{group['group_name']}}({{group['group_id']}})</option>

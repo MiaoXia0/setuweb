@@ -69,6 +69,7 @@ async def seturesult():
 @bp.route('/send', methods=['POST'])
 async def send():
     form = await request.form
+    r18 = form['r18'] == 'True'  # 前端获取的是字符串 比较判断
     url = form['url']
     pid = form['pid']
     p = form['p']
@@ -76,7 +77,7 @@ async def send():
     title = form['title']
     author = form['author']
     group_id = int(form['group_id'])
-    result = await send_to_group(group_id, url, pid, p, title, author, ori_url)
+    result = await send_to_group(group_id, url, pid, p, title, author, ori_url, r18)
     return result
 
 
