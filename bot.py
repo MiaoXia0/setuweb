@@ -177,8 +177,8 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
                 num = 10
             elif num < 1:
                 num = 1
+        r18 = int(ev['match'].group(2) is not None)
         if ev['message_type'] == 'group':
-            r18 = int(ev['match'].group(2) is not None)
             if r18 == 1:
                 try:
                     if not r18_groups[str(group_id)]:
