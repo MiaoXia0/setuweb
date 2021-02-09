@@ -3,25 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>Setu！</title>
+    <script src="setu/static/jquery-3.5.1.min.js"></script>
 </head>
 <body>
-    <b>lolicon.app</b><br />
-    <form method="post" action="/setu/result">
-        关键字:<input type="text" name="keyword" placeholder="可留空"><br />
-        r18:
-        <input type="radio" name="r18" value="0" checked="checked">否
-        <input type="radio" name="r18" value="1" >是
-        <input type="radio" name="r18" value="2" >混合<br />
-        数量:<input type="number" name="num" value="1" onchange="if(this.value>10)this.value=10;if(this.value<1)this.value=1;"><br />
-        使用长或宽最大为1200px的缩略图:
-        <input type="radio" name="size1200" value="0" checked="checked">否
-        <input type="radio" name="size1200" value="1" >是<br />
-        <button type="submit">Setu!</button><br />
-
-    </form>
-    <b>acgmx</b><br />
-    <form type="get" action="/setu/acgmx">
-        <button type="submit">Setu!</button>
-    </form>
+    <select id="api">
+        <option value="lolicon">lolicon</option>
+        <option value="acgmx">acgmx</option>
+    </select>
+    <div class="lolicon">
+        <b>lolicon.app</b><br />
+        <form method="post" action="/setu/result">
+            关键字:<input type="text" name="keyword" placeholder="可留空"><br />
+            r18:
+            <input type="radio" name="r18" value="0" checked="checked">否
+            <input type="radio" name="r18" value="1" >是
+            <input type="radio" name="r18" value="2" >混合<br />
+            数量:<input type="number" name="num" value="1" onchange="if(this.value>10)this.value=10;if(this.value<1)this.value=1;"><br />
+            使用长或宽最大为1200px的缩略图:
+            <input type="radio" name="size1200" value="0" checked="checked">否
+            <input type="radio" name="size1200" value="1" >是<br />
+            <button type="submit">Setu!</button><br />
+        </form>
+    </div>
+    <div class="acgmx" style="display:none;">
+        <b>acgmx</b><br />
+        <form type="get" action="/setu/acgmx">
+            <button type="submit">Setu!</button>
+        </form>
+    </div>
 </body>
+<script>
+    $("#api").change(function(){
+        if(this.val() == "lolicon"){
+            $(".lolicon").show();
+            $(".acgmx").hide();
+        }else if(this.val() == "acgmx"){
+            $(".acgmx").show();
+            $(".lolicon").hide();
+        }
+
+    })
+</script>
 </html>
