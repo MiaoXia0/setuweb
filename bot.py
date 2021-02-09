@@ -151,31 +151,45 @@ async def setwithdraw(bot: HoshinoBot, ev: CQEvent):
 
 @sv.on_rex(r'^[来发给](\d*)?[份点张幅]([Rr]18)?(.*)?[涩瑟色]图$')
 async def group_setu(bot: HoshinoBot, ev: CQEvent):
-    group_id = ev.group_id
-    try:
-        if not allowed_groups[str(group_id)]:
+    if ev['message_type'] == 'group':
+        group_id = ev.group_id
+        try:
+            if not allowed_groups[str(group_id)]:
+                await bot.send_group_msg(group_id=group_id, message='此群不允许发送Setu！')
+                return
+        except KeyError:
             await bot.send_group_msg(group_id=group_id, message='此群不允许发送Setu！')
             return
-    except KeyError:
-        await bot.send_group_msg(group_id=group_id, message='此群不允许发送Setu！')
-        return
     api = config['group_api']
+
     if api == 'lolicon':
         num = ev['match'].group(1)
-        if num == '':
-            num = 1
-        else:
+        try:
             num = int(num)
-        r18 = int(ev['match'].group(2) is not None)
-        if r18 == 1:
-            try:
-                if not r18_groups[str(group_id)]:
+        except ValueError:
+            if num == '':
+                num = 1
+            else:
+                await bot.send(ev, '请输入正确的数字')
+                return
+        else:
+            if num > 10:
+                num = 10
+            elif num < 1:
+                num = 1
+        if ev['message_type'] == 'group':
+            r18 = int(ev['match'].group(2) is not None)
+            if r18 == 1:
+                try:
+                    if not r18_groups[str(group_id)]:
+                        await bot.send_group_msg(group_id=group_id, message='此群不允许发送r18Setu！')
+                        return
+                except KeyError:
                     await bot.send_group_msg(group_id=group_id, message='此群不允许发送r18Setu！')
                     return
-            except KeyError:
-                await bot.send_group_msg(group_id=group_id, message='此群不允许发送r18Setu！')
-                return
-        await bot.send_group_msg(group_id=group_id, message='获取中')
+            await bot.send_group_msg(group_id=group_id, message='获取中')
+        else:
+            await bot.send_private_msg(user_id=ev.user_id, message='获取中')
         keyword = ev['match'].group(3)
         apikeys = config['apikey']
         size1200 = int(config['size1200'])
