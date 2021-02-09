@@ -29,7 +29,7 @@
 
 <script>
     function send(pid) {
-        $("#info" + pid).html("发送中")
+        $("#info" + pid).html("发送中或已发送等待撤回")
         $.ajax({
             type: "post",
             url: "/setu/acgmxsend",
