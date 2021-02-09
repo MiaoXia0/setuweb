@@ -5,6 +5,7 @@
 在线使用地址为http://bot地址/setu
 可通过setuhelp指令获取\
 群内使用方法见指令说明
+支持私聊（需魔改Hoshinobot源码）
 
 ## 安装方法
 1. 在hoshino/modules文件夹下使用git clone本项目
