@@ -26,14 +26,12 @@ if not os.path.exists(r18_path):
 else:
     r18_groups = json.load(open(r18_path, 'r'))
 
-
 withdraw_path = os.path.dirname(__file__) + '/withdraw_groups.json'
 if not os.path.exists(withdraw_path):
     withdraw_groups = {}
     json.dump(withdraw_groups, open(withdraw_path, 'w'))
 else:
     withdraw_groups = json.load(open(withdraw_path, 'r'))
-
 
 sv = Service('setuweb')
 ip = json.loads(requests.get('https://jsonip.com/').text)['ip']
@@ -199,9 +197,6 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
                 except KeyError:
                     await bot.send_group_msg(group_id=group_id, message='此群不允许发送r18Setu！')
                     return
-            await bot.send_group_msg(group_id=group_id, message='获取中')
-        else:
-            await bot.send_private_msg(user_id=ev.user_id, message='获取中')
         keyword = ev['match'].group(3)
         apikeys = config['apikey']
         size1200 = int(config['size1200'])
@@ -269,7 +264,8 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
         author = res['data']['user']['name']
         ori_url = f'https://www.pixiv.net/artworks/{pid}'
         if ev['message_type'] == 'group':
-            await send_to_group_acgmx(ev.group_id, img_url, pid, restrict, title, author, ori_url, config['acgmx_token'])
+            await send_to_group_acgmx(ev.group_id, img_url, pid, restrict, title, author, ori_url,
+                                      config['acgmx_token'])
         else:
             await send_to_private_acgmx(ev.user_id, url, pid, restrict, title, author, ori_url, config['acgmx_token'])
 
@@ -301,9 +297,9 @@ async def down_acgmx_img(url: str, token: str):
 
 
 async def format_msg(url: str, pid: str, p: str, title: str, author: str, ori_url: str):
-    filename = url.split('/')[-1]
-    img = R.img(f'setuweb/{filename}').cqcode
-    msg = f'pid: {pid} p{p}\n标题: {title}\n作者: {author}\n原地址: {ori_url}\n{url}\n{img}'
+    # filename = url.split('/')[-1]
+    # img = R.img(f'setuweb/{filename}').cqcode
+    msg = f'pid: {pid} p{p}\n标题: {title}\n作者: {author}\n原地址: {ori_url}\n{url}'
     return msg
 
 
@@ -320,10 +316,14 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
         except KeyError:
             return '此群不允许发送r18Setu！'
     filename = url.split('/')[-1]
+    msg = await format_msg(url, pid, p, title, author, ori_url)
+    await bot.send_group_msg(group_id=group_id, message=msg)
     if not os.path.exists(R.img(f'setuweb/{filename}').path):
         await down_img(url)
-    msg = await format_msg(url, pid, p, title, author, ori_url)
-    result = await bot.send_group_msg(group_id=group_id, message=msg)
+    # msg = await format_msg(url, pid, p, title, author, ori_url)
+    filename = url.split('/')[-1]
+    img = R.img(f'setuweb/{filename}').cqcode
+    result = await bot.send_group_msg(group_id=group_id, message=img)
     withdraw = int(config['withdraw'])
     ifwithdraw = True
     try:
@@ -334,43 +334,61 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
     if ifwithdraw and withdraw and withdraw > 0:
         print(f'{withdraw}秒后撤回')
         await asyncio.sleep(withdraw)
-        print(f'准备撤回')
         await bot.delete_msg(message_id=result['message_id'])
-        print(f'已撤回')
         return f'已发送到群{group_id}并撤回！'
     return f'已发送到群{group_id}！'
 
 
-async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: str, author: str, ori_url: str, token: str):
+async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: str, author: str, ori_url: str,
+                              token: str):
     try:
         if not allowed_groups[str(group_id)]:
             return '此群不允许发送！'
     except KeyError:
         return '此群不允许发送！'
     else:
+        msg = await format_msg(url, pid, p, title, author, ori_url)
+        await bot.send_group_msg(group_id=group_id, message=msg)
         filename = url.split('/')[-1]
         if not os.path.exists(R.img(f'setuweb/{filename}').path):
             await down_acgmx_img(url, token)
-        msg = await format_msg(url, pid, p, title, author, ori_url)
-        await bot.send_group_msg(group_id=group_id, message=msg)
-        print(f'sended {filename}')
+        img = R.img(f'setuweb/{filename}').cqcode
+        result = await bot.send_group_msg(group_id=group_id, message=img)
+        withdraw = int(config['withdraw'])
+        ifwithdraw = True
+        try:
+            if not withdraw_groups[str(group_id)]:
+                ifwithdraw = False
+        except KeyError:
+            ifwithdraw = False
+        if ifwithdraw and withdraw and withdraw > 0:
+            print(f'{withdraw}秒后撤回')
+            await asyncio.sleep(withdraw)
+            await bot.delete_msg(message_id=result['message_id'])
+            return f'已发送到群{group_id}并撤回！'
         return f'已发送到群{group_id}！'
 
 
 async def send_to_private(user_id: int, url: str, pid: str, p: str, title: str, author: str, ori_url: str):
+    msg = await format_msg(url, pid, p, title, author, ori_url)
+    await bot.send_private_msg(user_id=user_id, message=msg)
     filename = url.split('/')[-1]
     if not os.path.exists(R.img(f'setuweb/{filename}').path):
         await down_img(url)
+    img = R.img(f'setuweb/{filename}').cqcode
+    await bot.send_private_msg(user_id=user_id, message=img)
+
+
+async def send_to_private_acgmx(user_id: int, url: str, pid: str, p: str, title: str, author: str, ori_url: str,
+                                token: str):
     msg = await format_msg(url, pid, p, title, author, ori_url)
     await bot.send_private_msg(user_id=user_id, message=msg)
-
-
-async def send_to_private_acgmx(user_id: int, url: str, pid: str, p: str, title: str, author: str, ori_url: str, token: str):
     filename = url.split('/')[-1]
     if not os.path.exists(R.img(f'setuweb/{filename}').path):
         await down_acgmx_img(url, token)
-    msg = await format_msg(url, pid, p, title, author, ori_url)
-    await bot.send_private_msg(user_id=user_id, message=msg)
+
+    img = R.img(f'setuweb/{filename}').cqcode
+    await bot.send_private_msg(user_id=user_id, message=img)
 
 
 def get_groups():
