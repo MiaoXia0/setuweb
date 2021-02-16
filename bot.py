@@ -232,6 +232,7 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
         elif code != 0:
             await bot.send(ev, 'setu获取失败')
         else:
+            sending = []
             data = result['data']
             for setu in data:
                 url = setu['url']
@@ -241,9 +242,10 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
                 author = setu['author']
                 ori_url = f'https://www.pixiv.net/artworks/{pid}'
                 if ev['message_type'] == 'group':
-                    await send_to_group(ev.group_id, url, pid, p, title, author, ori_url, bool(r18))
+                    sending.append(send_to_group(ev.group_id, url, pid, p, title, author, ori_url, bool(r18)))
                 else:
-                    await send_to_private(ev.user_id, url, pid, p, title, author, ori_url)
+                    sending.append(send_to_private(ev.user_id, url, pid, p, title, author, ori_url))
+            await asyncio.gather(*sending)
 
 
     elif config['group_api'] == 'acgmx':
