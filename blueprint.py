@@ -77,7 +77,7 @@ async def send():
         return '请先在群内设置密码'
     if psw != password:
         return '密码错误'
-    group_id = int(form['group_id'])
+    group_id = int(group_id)
     r18 = form['r18'] == 'True'  # 前端获取的是字符串 比较判断
     url = form['url']
     pid = form['pid']
@@ -92,13 +92,21 @@ async def send():
 @bp.route('/acgmxsend', methods=['POST'])
 async def acgmxsend():
     form = await request.form
+    group_id = form['group_id']
+    psw = form['psw']
+    try:
+        password = group_psw[group_id]
+    except KeyError:
+        return '请先在群内设置密码'
+    if psw != password:
+        return '密码错误'
     pid = form['pid']
     p = form['p']
     url = form['url']
     ori_url = f'https://www.pixiv.net/artworks/{pid}'
     title = form['title']
     author = form['author']
-    group_id = int(form['group_id'])
+    group_id = int(group_id)
     result = await send_to_group_acgmx(group_id, url, pid, p, title, author, ori_url, config['acgmx_token'])
     return result
 
