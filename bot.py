@@ -1,3 +1,4 @@
+from aiohttp import ClientConnectorError
 from nonebot import get_bot
 from hoshino import Service, R
 from hoshino.typing import HoshinoBot, CQEvent
@@ -301,11 +302,15 @@ async def down_img(url: str):
     print(f'downloading from {url}')
     filename = url.split('/')[-1]
     path = R.img('setuweb/').path
-    async with aiohttp.ClientSession() as session:
-        res = await session.get(url)
-        f = open(f'{path}/{filename}', 'wb')
-        res = await res.read()
-        f.write(res)
+    try:
+        async with aiohttp.ClientSession() as session:
+            res = await session.get(url)
+            f = open(f'{path}/{filename}', 'wb')
+            res = await res.read()
+            f.write(res)
+            return True
+    except ClientConnectorError:
+        return False
 
 
 async def down_acgmx_img(url: str, token: str):
@@ -316,11 +321,15 @@ async def down_acgmx_img(url: str, token: str):
     print(f'downloading from {url}')
     filename = url.split('/')[-1]
     path = R.img('setuweb/').path
-    async with aiohttp.ClientSession(headers=headers) as session:
-        res = await session.get(url)
-        f = open(f'{path}/{filename}', 'wb')
-        res = await res.read()
-        f.write(res)
+    try:
+        async with aiohttp.ClientSession(headers=headers) as session:
+            res = await session.get(url)
+            f = open(f'{path}/{filename}', 'wb')
+            res = await res.read()
+            f.write(res)
+            return True
+    except ClientConnectorError:
+        return False
 
 
 async def format_msg(url: str, pid: str, p: str, title: str, author: str, ori_url: str):
@@ -345,9 +354,11 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
     filename = url.split('/')[-1]
     msg = await format_msg(url, pid, p, title, author, ori_url)
     await bot.send_group_msg(group_id=group_id, message=msg)
+    downres = True
     if not os.path.exists(R.img(f'setuweb/{filename}').path):
-        await down_img(url)
-    # msg = await format_msg(url, pid, p, title, author, ori_url)
+        downres = await down_img(url)
+    if not downres:
+        return f'涩图下载失败\nurl:{url}'
     filename = url.split('/')[-1]
     img = R.img(f'setuweb/{filename}').cqcode
     result = await bot.send_group_msg(group_id=group_id, message=img)
@@ -377,8 +388,11 @@ async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: 
         msg = await format_msg(url, pid, p, title, author, ori_url)
         await bot.send_group_msg(group_id=group_id, message=msg)
         filename = url.split('/')[-1]
+        downres = True
         if not os.path.exists(R.img(f'setuweb/{filename}').path):
-            await down_acgmx_img(url, token)
+            downres = await down_acgmx_img(url, token)
+        if not downres:
+            return f'涩图下载失败\nurl:{url}'
         img = R.img(f'setuweb/{filename}').cqcode
         result = await bot.send_group_msg(group_id=group_id, message=img)
         withdraw = int(config['withdraw'])
