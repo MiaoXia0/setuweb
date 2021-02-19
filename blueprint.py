@@ -1,4 +1,4 @@
-from .bot import get_groups, send_to_group, send_to_group_acgmx
+from .bot import get_groups, send_to_group, send_to_group_acgmx, group_psw
 from quart import Blueprint, render_template, request
 import aiohttp
 import os
@@ -69,6 +69,14 @@ async def seturesult():
 @bp.route('/send', methods=['POST'])
 async def send():
     form = await request.form
+    group_id = int(form['group_id'])
+    psw = form['psw']
+    try:
+        password = group_psw[group_id]
+    except KeyError:
+        return '请先在群内设置密码'
+    if psw != password:
+        return '密码错误'
     r18 = form['r18'] == 'True'  # 前端获取的是字符串 比较判断
     url = form['url']
     pid = form['pid']
@@ -76,7 +84,6 @@ async def send():
     ori_url = f'https://www.pixiv.net/artworks/{pid}'
     title = form['title']
     author = form['author']
-    group_id = int(form['group_id'])
     result = await send_to_group(group_id, url, pid, p, title, author, ori_url, r18)
     return result
 

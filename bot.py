@@ -33,6 +33,13 @@ if not os.path.exists(withdraw_path):
 else:
     withdraw_groups = json.load(open(withdraw_path, 'r'))
 
+psw_path = os.path.dirname(__file__) + '/group_psw.json'
+if not os.path.exists(psw_path):
+    group_psw = {}
+    json.dump(group_psw, open(psw_path, 'w'))
+else:
+    group_psw = json.load(open(psw_path, 'r'))
+
 sv = Service('setuweb')
 ip = json.loads(requests.get('https://jsonip.com/').text)['ip']
 bot = get_bot()
@@ -47,6 +54,7 @@ else:
 
 help_str = f'''本插件为在线setu插件
 进入{setu_url}开始使用本插件
+输入setpsw+密码来设置本群web端发送密码
 输入setuallow允许本群发送色图
 输入setuforbid禁止本群发送色图
 输入r18allow允许本群发送r18色图
@@ -157,6 +165,23 @@ async def setwithdraw(bot: HoshinoBot, ev: CQEvent):
     config['withdraw'] = time
     json.dump(config, open(f'{curr_dir}/config.json', 'w'))
     await bot.send(ev, f'已设置撤回时间为{time}秒')
+
+
+@sv.on_prefix('setpsw')
+async def setpsw(bot: HoshinoBot, ev: CQEvent):
+    if ev['message_type'] != 'group':
+        return
+    if not check_priv(ev, ADMIN):
+        await bot.send(ev, f'管理员以上才能使用')
+        return
+    psw = ev.message.extract_plain_text().strip()
+    group_id = ev.group_id
+    group_psw[str(group_id)] = psw
+    json.dump(group_psw, open(psw_path, 'w'))
+    if psw == '':
+        await bot.send(ev, f'已设置群{group_id}密码为空')
+    else:
+        await bot.send(ev, f'已设置群{group_id}密码为{psw}')
 
 
 @sv.on_rex(r'^[来发给](\d*)?[份点张幅]([Rr]18)?(.*)?[涩瑟色]图$')

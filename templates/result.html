@@ -49,6 +49,7 @@
                     <option value="{{group['group_id']}}">{{group['group_name']}}({{group['group_id']}})</option>
                 {% endfor %}
                 </select>
+                群密码: <input type="text" name="psw">
                 <button onClick="send({{setu['pid']}})">发送到群</button><div id="info{{setu['pid']}}"></div>
             </form>
             <img style="width:50%;" src="{{setu['url']}}"><br />

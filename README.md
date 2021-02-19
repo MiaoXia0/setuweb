@@ -26,6 +26,7 @@
 |指令|功能|
 |---|---|
 |setuhelp|查看帮助|
+|setpsw|设置本群密码|
 |setuallow|允许当前群发送setu|
 |setuforbid|禁止当前群发送setu|
 |r18allow|允许当前群发送r18setu|
