@@ -504,8 +504,7 @@ async def imgAntiShielding(path):
                             int(random.random() * 255)))
         image.save(path_anti)
     elif config['antishielding'] == 2:  # 旋转
-        image = image.rotate(90)
-        image = image.resize((h, w))
+        image = image.rotate(90, expand=True)
         image.save(path_anti)
 
     elif config['antishielding'] == 3:  # 混合
