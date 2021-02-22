@@ -7,6 +7,8 @@ import requests
 import os
 import aiohttp
 import asyncio
+from PIL import Image
+import random
 
 try:
     import ujson as json
@@ -185,6 +187,33 @@ async def setpsw(bot: HoshinoBot, ev: CQEvent):
         await bot.send(ev, f'已设置群{group_id}密码为{psw}')
 
 
+@sv.on_prefix('antishielding')
+async def withdrawon(bot: HoshinoBot, ev: CQEvent):
+    if not check_priv(ev, SUPERUSER):
+        await bot.send(ev, f'机器人主人才能使用')
+        return
+    msg = ev.message.extract_plain_text().strip()
+    if msg == '':
+        status = '关闭' if config['antishielding'] == 0 else '开启'
+        antitype = '错误'
+        if config['antishielding'] == 1:
+            antitype = '随机像素'
+        elif config['antishielding'] == 2:
+            antitype = '旋转'
+        elif config['antishielding'] == 3:
+            antitype = '混合'
+        if config['antishielding'] == 0:
+            await bot.send(ev, f'当前反和谐{status}')
+        else:
+            await bot.send(ev, f'当前反和谐{status}，类型为{antitype}')
+    elif msg not in ['0', '1', '2', '3']:
+        await bot.send(ev, '请输入正确的数字')
+    else:
+        config['antishielding'] = int(msg)
+        json.dump(config, open(f'{curr_dir}/config.json', 'w'))
+        await bot.send(ev, f'已将防撤回设为{msg}')
+
+
 @sv.on_rex(r'^[来发给](\d*)?[份点张幅]([Rr]18)?(.*)?[涩瑟色]图$')
 async def group_setu(bot: HoshinoBot, ev: CQEvent):
     if ev['message_type'] == 'group':
@@ -360,6 +389,9 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
     if not downres:
         return f'涩图下载失败\nurl:{url}'
     filename = url.split('/')[-1]
+    if config['antishielding']:
+        path = R.img(f'setuweb/{filename}').path
+        await imgAntiShielding(path)
     img = R.img(f'setuweb/{filename}').cqcode
     result = await bot.send_group_msg(group_id=group_id, message=img)
     withdraw = int(config['withdraw'])
@@ -393,6 +425,9 @@ async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: 
             downres = await down_acgmx_img(url, token)
         if not downres:
             return f'涩图下载失败\nurl:{url}'
+        if config['antishielding']:
+            path = R.img(f'setuweb/{filename}').path
+            await imgAntiShielding(path)
         img = R.img(f'setuweb/{filename}').cqcode
         result = await bot.send_group_msg(group_id=group_id, message=img)
         withdraw = int(config['withdraw'])
@@ -416,6 +451,9 @@ async def send_to_private(user_id: int, url: str, pid: str, p: str, title: str, 
     filename = url.split('/')[-1]
     if not os.path.exists(R.img(f'setuweb/{filename}').path):
         await down_img(url)
+    if config['antishielding']:
+        path = R.img(f'setuweb/{filename}').path
+        await imgAntiShielding(path)
     img = R.img(f'setuweb/{filename}').cqcode
     await bot.send_private_msg(user_id=user_id, message=img)
 
@@ -427,9 +465,34 @@ async def send_to_private_acgmx(user_id: int, url: str, pid: str, p: str, title:
     filename = url.split('/')[-1]
     if not os.path.exists(R.img(f'setuweb/{filename}').path):
         await down_acgmx_img(url, token)
-
+    if config['antishielding']:
+        path = R.img(f'setuweb/{filename}').path
+        await imgAntiShielding(path)
     img = R.img(f'setuweb/{filename}').cqcode
     await bot.send_private_msg(user_id=user_id, message=img)
+
+
+async def imgAntiShielding(path):
+    image = Image.open(path)
+    w, h = image.size
+    pixels = [
+        [0, 0],
+        [w - 1, 0],
+        [0, h - 1],
+        [w - 1, h - 1]
+    ]
+    if config['antishielding'] == 1:  # 随机像素
+        for p in pixels:
+            image.putpixel((p[0], p[1]), (random.random() * 255, random.random() * 255, random.random() * 255))
+        image.save(path)
+    elif config['antishielding'] == 2:  # 旋转
+        image.rotate(90)
+        image.save(path)
+    elif config['antishielding'] == 3:  # 混合
+        for p in pixels:
+            image.putpixel((p[0], p[1]), (random.random() * 255, random.random() * 255, random.random() * 255))
+        image.rotate(90)
+        image.save(path)
 
 
 def get_groups():

@@ -4,5 +4,6 @@
   "proxy": "i.pixiv.cat",
   "acgmx_token": "",
   "group_api": "lolicon",
-  "withdraw": 60
+  "withdraw": 60,
+  "antishielding": 0
 }
