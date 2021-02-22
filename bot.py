@@ -487,8 +487,8 @@ async def send_to_private_acgmx(user_id: int, url: str, pid: str, p: str, title:
 async def imgAntiShielding(path):
     image = Image.open(path)
     imgtype = path.split('.')[-1]
-    imgname = path.split('/')[-1].split('.')[-2]
-    path_anti = os.path.dirname(path) + f'{imgname}_anti.{imgtype}'
+    imgname = path.split('\\')[-1].split('.')[-2]
+    path_anti = os.path.dirname(path) + f'\\{imgname}_anti.{imgtype}'
     w, h = image.size
     pixels = [
         [0, 0],
