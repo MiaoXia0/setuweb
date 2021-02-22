@@ -477,9 +477,9 @@ async def imgAntiShielding(path):
     w, h = image.size
     pixels = [
         [0, 0],
-        [w - 1, 0],
-        [0, h - 1],
-        [w - 1, h - 1]
+        [int(w - 1), 0],
+        [0, int(h - 1)],
+        [int(w - 1), int(h - 1)]
     ]
     if config['antishielding'] == 1:  # 随机像素
         for p in pixels:
