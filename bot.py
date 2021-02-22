@@ -211,7 +211,7 @@ async def withdrawon(bot: HoshinoBot, ev: CQEvent):
     else:
         config['antishielding'] = int(msg)
         json.dump(config, open(f'{curr_dir}/config.json', 'w'))
-        await bot.send(ev, f'已将防撤回设为{msg}')
+        await bot.send(ev, f'已将反和谐设为{msg}')
 
 
 @sv.on_rex(r'^[来发给](\d*)?[份点张幅]([Rr]18)?(.*)?[涩瑟色]图$')
