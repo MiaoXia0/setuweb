@@ -490,7 +490,10 @@ async def imgAntiShielding(path):
         image.save(path)
     elif config['antishielding'] == 3:  # 混合
         for p in pixels:
-            image.putpixel((p[0], p[1]), (random.random() * 255, random.random() * 255, random.random() * 255))
+            image.putpixel((p[0], p[1]),
+                           (int(random.random() * 255),
+                            int(random.random() * 255),
+                            int(random.random() * 255)))
         image.rotate(90)
         image.save(path)
 
