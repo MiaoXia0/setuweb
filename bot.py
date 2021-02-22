@@ -474,6 +474,9 @@ async def send_to_private_acgmx(user_id: int, url: str, pid: str, p: str, title:
 
 async def imgAntiShielding(path):
     image = Image.open(path)
+    imgtype = path.split('.')[-1]
+    imgname = path.split('/')[-1].split('.')[-2]
+    path_anti = os.path.dirname(path) + f'{imgname}_anti.{imgtype}'
     w, h = image.size
     pixels = [
         [0, 0],
@@ -490,7 +493,9 @@ async def imgAntiShielding(path):
         image.save(path)
     elif config['antishielding'] == 2:  # 旋转
         image = image.rotate(90)
+        image = image.resize((h, w))
         image.save(path)
+
     elif config['antishielding'] == 3:  # 混合
         for p in pixels:
             image.putpixel((p[0], p[1]),
