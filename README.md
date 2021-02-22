@@ -34,6 +34,7 @@
 |withdrawon|开启当前群撤回|
 |withdrawoff|关闭当前群撤回|
 |setwithdraw|时间设置撤回时间(秒)|
+|antishielding(0关\\类型1\\2\\3)|查看或设置反和谐类型|
 |来\\发\\给(数量)份\\点\\张\\幅(R\\r18)(关键字)\\涩\\瑟\\色图|群内色图括号内容可选|
 
 各种群内开关只有管理员以上及主人才能使用\
@@ -55,5 +56,5 @@ r18选项仅对lolicon api有效\
 |acgmx_token|acgmx的token|字符串|
 |group_api|群内触发setu所用的api|字符串("lolicon"/"acgmx")|
 |withdraw|撤回时间 0为全局关闭|整数|
-
+|antishielding|反和谐类型0关1随机像素2旋转3混合|整数(0\\1\\2\\3)|
 group_api为acg_mx时只能获取单张随机setu 
