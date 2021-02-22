@@ -393,7 +393,7 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
         path = R.img(f'setuweb/{filename}').path
         await imgAntiShielding(path)
         imgtype = path.split('.')[-1]
-        imgname = path.split('/')[-1]
+        imgname = path.split('\\')[-1].split('.')[-2]
         filename = f'{imgname}_anti.{imgtype}'
     img = R.img(f'setuweb/{filename}').cqcode
     result = await bot.send_group_msg(group_id=group_id, message=img)
@@ -432,7 +432,7 @@ async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: 
             path = R.img(f'setuweb/{filename}').path
             await imgAntiShielding(path)
             imgtype = path.split('.')[-1]
-            imgname = path.split('/')[-1]
+            imgname = path.split('\\')[-1].split('.')[-2]
             filename = f'{imgname}_anti.{imgtype}'
         img = R.img(f'setuweb/{filename}').cqcode
         result = await bot.send_group_msg(group_id=group_id, message=img)
@@ -461,7 +461,7 @@ async def send_to_private(user_id: int, url: str, pid: str, p: str, title: str, 
         path = R.img(f'setuweb/{filename}').path
         await imgAntiShielding(path)
         imgtype = path.split('.')[-1]
-        imgname = path.split('/')[-1]
+        imgname = path.split('\\')[-1].split('.')[-2]
         filename = f'{imgname}_anti.{imgtype}'
     img = R.img(f'setuweb/{filename}').cqcode
     await bot.send_private_msg(user_id=user_id, message=img)
@@ -478,7 +478,7 @@ async def send_to_private_acgmx(user_id: int, url: str, pid: str, p: str, title:
         path = R.img(f'setuweb/{filename}').path
         await imgAntiShielding(path)
         imgtype = path.split('.')[-1]
-        imgname = path.split('/')[-1]
+        imgname = path.split('\\')[-1].split('.')[-2]
         filename = f'{imgname}_anti.{imgtype}'
     img = R.img(f'setuweb/{filename}').cqcode
     await bot.send_private_msg(user_id=user_id, message=img)
