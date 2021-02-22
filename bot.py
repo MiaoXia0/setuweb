@@ -65,6 +65,8 @@ help_str = f'''本插件为在线setu插件
 输入withdrawon开启本群撤回
 输入withdrawoff关闭本群撤回
 输入setwithdraw+时间设置撤回时间(秒) 0为全局关闭撤回
+输入setpsw+密码设置本群web端密码
+输入antishielding设置反和谐方式
 输入来\\发\\给(数量)份\\点\\张\\幅(R\\r18)(关键字)\\涩\\瑟\\色图 在群内获取色图'''
 
 
