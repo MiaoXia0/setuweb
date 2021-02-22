@@ -392,6 +392,9 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
     if config['antishielding']:
         path = R.img(f'setuweb/{filename}').path
         await imgAntiShielding(path)
+        imgtype = path.split('.')[-1]
+        imgname = path.split('/')[-1]
+        filename = f'{imgname}_anti.{imgtype}'
     img = R.img(f'setuweb/{filename}').cqcode
     result = await bot.send_group_msg(group_id=group_id, message=img)
     withdraw = int(config['withdraw'])
@@ -428,6 +431,9 @@ async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: 
         if config['antishielding']:
             path = R.img(f'setuweb/{filename}').path
             await imgAntiShielding(path)
+            imgtype = path.split('.')[-1]
+            imgname = path.split('/')[-1]
+            filename = f'{imgname}_anti.{imgtype}'
         img = R.img(f'setuweb/{filename}').cqcode
         result = await bot.send_group_msg(group_id=group_id, message=img)
         withdraw = int(config['withdraw'])
@@ -454,6 +460,9 @@ async def send_to_private(user_id: int, url: str, pid: str, p: str, title: str, 
     if config['antishielding']:
         path = R.img(f'setuweb/{filename}').path
         await imgAntiShielding(path)
+        imgtype = path.split('.')[-1]
+        imgname = path.split('/')[-1]
+        filename = f'{imgname}_anti.{imgtype}'
     img = R.img(f'setuweb/{filename}').cqcode
     await bot.send_private_msg(user_id=user_id, message=img)
 
@@ -468,6 +477,9 @@ async def send_to_private_acgmx(user_id: int, url: str, pid: str, p: str, title:
     if config['antishielding']:
         path = R.img(f'setuweb/{filename}').path
         await imgAntiShielding(path)
+        imgtype = path.split('.')[-1]
+        imgname = path.split('/')[-1]
+        filename = f'{imgname}_anti.{imgtype}'
     img = R.img(f'setuweb/{filename}').cqcode
     await bot.send_private_msg(user_id=user_id, message=img)
 
@@ -490,11 +502,11 @@ async def imgAntiShielding(path):
                            (int(random.random() * 255),
                             int(random.random() * 255),
                             int(random.random() * 255)))
-        image.save(path)
+        image.save(path_anti)
     elif config['antishielding'] == 2:  # 旋转
         image = image.rotate(90)
         image = image.resize((h, w))
-        image.save(path)
+        image.save(path_anti)
 
     elif config['antishielding'] == 3:  # 混合
         for p in pixels:
@@ -503,7 +515,7 @@ async def imgAntiShielding(path):
                             int(random.random() * 255),
                             int(random.random() * 255)))
         image.rotate(90)
-        image.save(path)
+        image.save(path_anti)
 
 
 def get_groups():
