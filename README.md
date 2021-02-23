@@ -59,4 +59,7 @@ r18选项仅对lolicon api有效\
 |withdraw|撤回时间 0为全局关闭|整数|
 |antishielding|反和谐类型0关1随机像素2旋转3混合|整数(0\\1\\2\\3)|
 
-group_api为acg_mx时只能获取单张随机setu 
+group_api为acg_mx时只能获取单张随机setu
+
+# 提问的智慧
+<https://github.com/ryanhanwu/how-to-ask-questions-the-smart-way>
