@@ -49,11 +49,13 @@ bot = get_bot()
 port = bot.config.PORT
 curr_dir = os.path.dirname(__file__)
 config = json.load(open(f'{curr_dir}/config.json', 'r'))
-
+url = ip
+if config['url'] != '':
+    url = config['url']
 if port == 80:
-    setu_url = f'http://{ip}/setu/'
+    setu_url = f'http://{url}/setu/'
 else:
-    setu_url = f'http://{ip}:{port}/setu/'
+    setu_url = f'http://{url}:{port}/setu/'
 
 help_str = f'''本插件为在线setu插件
 进入{setu_url}开始使用本插件
