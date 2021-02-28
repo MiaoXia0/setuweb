@@ -58,7 +58,7 @@ r18选项仅对lolicon api有效\
 |group_api|群内触发setu所用的api|字符串("lolicon"/"acgmx")|
 |withdraw|撤回时间 0为全局关闭|整数|
 |antishielding|反和谐类型0关1随机像素2旋转3混合|整数(0\\1\\2\\3)|
-
+|url|自定义页面url代替http://ip:port/|字符串|
 group_api为acg_mx时只能获取单张随机setu
 
 # 提问的智慧
