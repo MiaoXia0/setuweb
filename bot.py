@@ -60,16 +60,16 @@ else:
 help_str = f'''本插件为在线setu插件
 进入{setu_url}开始使用本插件
 输入setpsw+密码来设置本群web端发送密码
-输入setuallow允许本群发送色图
-输入setuforbid禁止本群发送色图
-输入r18allow允许本群发送r18色图
-输入r18forbid禁止本群发送r18色图
+输入setuallow允许本群发送Setu
+输入setuforbid禁止本群发送Setu
+输入r18allow允许本群发送r18Setu
+输入r18forbid禁止本群发送r18Setu
 输入withdrawon开启本群撤回
 输入withdrawoff关闭本群撤回
 输入setwithdraw+时间设置撤回时间(秒) 0为全局关闭撤回
 输入setpsw+密码设置本群web端密码
 输入antishielding设置反和谐方式
-输入来\\发\\给(数量)份\\点\\张\\幅(R\\r18)(关键字)\\涩\\瑟\\色图 在群内获取色图'''
+输入来\\发\\给(数量)份\\点\\张\\幅(R\\r18)(关键字)\\涩\\瑟\\Setu 在群内获取Setu'''
 
 
 @sv.on_fullmatch('setuhelp')
@@ -287,7 +287,7 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
             if code == 0 or code == 404:
                 break
         if code == 404:
-            await bot.send(ev, '找不到此关键字的色图')
+            await bot.send(ev, '找不到此关键字的Setu')
         elif code != 0:
             await bot.send(ev, 'setu获取失败')
         else:
@@ -386,7 +386,18 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
             return '此群不允许发送r18Setu！'
     filename = url.split('/')[-1]
     msg = await format_msg(url, pid, p, title, author, ori_url)
-    await bot.send_group_msg(group_id=group_id, message=msg)
+    if config['forward']:
+        data = {
+            "type": "node",
+            "data": {
+                "name": '小冰',
+                "uin": '2854196306',
+                "content": msg
+            }
+        }
+        await bot.send_group_forward_msg(group_id=group_id, messages=data)
+    else:
+        await bot.send_group_msg(group_id=group_id, message=msg)
     downres = True
     if not os.path.exists(R.img(f'setuweb/{filename}').path):
         downres = await down_img(url)
@@ -400,7 +411,18 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
         imgname = path.split('\\')[-1].split('.')[-2]
         filename = f'{imgname}_anti.{imgtype}'
     img = R.img(f'setuweb/{filename}').cqcode
-    result = await bot.send_group_msg(group_id=group_id, message=img)
+    if config['forward']:
+        data = {
+            "type": "node",
+            "data": {
+                "name": '小冰',
+                "uin": '2854196306',
+                "content": img
+            }
+        }
+        result = await bot.send_group_forward_msg(group_id=group_id, messages=data)
+    else:
+        result = await bot.send_group_msg(group_id=group_id, message=img)
     withdraw = int(config['withdraw'])
     ifwithdraw = True
     try:
@@ -425,7 +447,18 @@ async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: 
         return '此群不允许发送！'
     else:
         msg = await format_msg(url, pid, p, title, author, ori_url)
-        await bot.send_group_msg(group_id=group_id, message=msg)
+        if config['forward']:
+            data = {
+                "type": "node",
+                "data": {
+                    "name": '小冰',
+                    "uin": '2854196306',
+                    "content": msg
+                }
+            }
+            await bot.send_group_forward_msg(group_id=group_id, messages=data)
+        else:
+            await bot.send_group_msg(group_id=group_id, message=msg)
         filename = url.split('/')[-1]
         downres = True
         if not os.path.exists(R.img(f'setuweb/{filename}').path):
@@ -439,7 +472,18 @@ async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: 
             imgname = path.split('\\')[-1].split('.')[-2]
             filename = f'{imgname}_anti.{imgtype}'
         img = R.img(f'setuweb/{filename}').cqcode
-        result = await bot.send_group_msg(group_id=group_id, message=img)
+        if config['forward']:
+            data = {
+                "type": "node",
+                "data": {
+                    "name": '小冰',
+                    "uin": '2854196306',
+                    "content": img
+                }
+            }
+            result = await bot.send_group_forward_msg(group_id=group_id, messages=data)
+        else:
+            result = await bot.send_group_msg(group_id=group_id, message=img)
         withdraw = int(config['withdraw'])
         ifwithdraw = True
         try:

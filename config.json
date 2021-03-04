@@ -6,5 +6,6 @@
   "group_api": "lolicon",
   "withdraw": 60,
   "antishielding": 0,
-  "url": ""
+  "url": "",
+  "forward" : false
 }
