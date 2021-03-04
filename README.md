@@ -62,6 +62,7 @@ r18选项仅对lolicon api有效\
 |antishielding|反和谐类型0关1随机像素2旋转3混合|整数(0\\1\\2\\3)|
 |url|自定义页面url代替说明中的http://ip:port/|字符串|
 |forward|是否启用卡片消息|布尔|
+
 group_api为acg_mx时只能获取单张随机setu
 
 # 提问的智慧
