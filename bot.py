@@ -18,28 +18,28 @@ except ImportError:
 allow_path = os.path.dirname(__file__) + '/allowed_groups.json'
 if not os.path.exists(allow_path):
     allowed_groups = {}
-    json.dump(allowed_groups, open(allow_path, 'w'))
+    json.dump(allowed_groups, open(allow_path, 'w'), indent=4)
 else:
     allowed_groups = json.load(open(allow_path, 'r'))
 
 r18_path = os.path.dirname(__file__) + '/r18_groups.json'
 if not os.path.exists(r18_path):
     r18_groups = {}
-    json.dump(r18_groups, open(r18_path, 'w'))
+    json.dump(r18_groups, open(r18_path, 'w'), indent=4)
 else:
     r18_groups = json.load(open(r18_path, 'r'))
 
 withdraw_path = os.path.dirname(__file__) + '/withdraw_groups.json'
 if not os.path.exists(withdraw_path):
     withdraw_groups = {}
-    json.dump(withdraw_groups, open(withdraw_path, 'w'))
+    json.dump(withdraw_groups, open(withdraw_path, 'w'), indent=4)
 else:
     withdraw_groups = json.load(open(withdraw_path, 'r'))
 
 psw_path = os.path.dirname(__file__) + '/group_psw.json'
 if not os.path.exists(psw_path):
     group_psw = {}
-    json.dump(group_psw, open(psw_path, 'w'))
+    json.dump(group_psw, open(psw_path, 'w'), indent=4)
 else:
     group_psw = json.load(open(psw_path, 'r'))
 
@@ -69,6 +69,8 @@ help_str = f'''本插件为在线setu插件
 输入setwithdraw+时间设置撤回时间(秒) 0为全局关闭撤回
 输入setpsw+密码设置本群web端密码
 输入antishielding设置反和谐方式
+输入forwardon开启转发消息模式
+输入forwardoff关闭转发消息模式
 输入来\\发\\给(数量)份\\点\\张\\幅(R\\r18)(关键字)\\涩\\瑟\\Setu 在群内获取Setu'''
 
 
@@ -86,7 +88,7 @@ async def setuallow(bot: HoshinoBot, ev: CQEvent):
         return
     group_id = ev.group_id
     allowed_groups[str(group_id)] = True
-    json.dump(allowed_groups, open(allow_path, 'w'))
+    json.dump(allowed_groups, open(allow_path, 'w'), indent=4)
     await bot.send(ev, f'已允许{group_id}')
 
 
@@ -99,7 +101,7 @@ async def setuforbid(bot: HoshinoBot, ev: CQEvent):
         return
     group_id = ev.group_id
     allowed_groups[str(group_id)] = False
-    json.dump(allowed_groups, open(allow_path, 'w'))
+    json.dump(allowed_groups, open(allow_path, 'w'), indent=4)
     await bot.send(ev, f'已禁止{group_id}')
 
 
@@ -112,7 +114,7 @@ async def setuallow(bot: HoshinoBot, ev: CQEvent):
         return
     group_id = ev.group_id
     r18_groups[str(group_id)] = True
-    json.dump(r18_groups, open(r18_path, 'w'))
+    json.dump(r18_groups, open(r18_path, 'w'), indent=4)
     await bot.send(ev, f'已允许{group_id}r18')
 
 
@@ -125,7 +127,7 @@ async def setuforbid(bot: HoshinoBot, ev: CQEvent):
         return
     group_id = ev.group_id
     r18_groups[str(group_id)] = False
-    json.dump(r18_groups, open(r18_path, 'w'))
+    json.dump(r18_groups, open(r18_path, 'w'), indent=4)
     await bot.send(ev, f'已禁止{group_id}r18')
 
 
@@ -138,7 +140,7 @@ async def withdrawon(bot: HoshinoBot, ev: CQEvent):
         return
     group_id = ev.group_id
     withdraw_groups[str(group_id)] = True
-    json.dump(withdraw_groups, open(withdraw_path, 'w'))
+    json.dump(withdraw_groups, open(withdraw_path, 'w'), indent=4)
     await bot.send(ev, f'已开启{group_id}撤回')
 
 
@@ -151,8 +153,28 @@ async def withdrawoff(bot: HoshinoBot, ev: CQEvent):
         return
     group_id = ev.group_id
     withdraw_groups[str(group_id)] = False
-    json.dump(withdraw_groups, open(withdraw_path, 'w'))
+    json.dump(withdraw_groups, open(withdraw_path, 'w'), indent=4)
     await bot.send(ev, f'已关闭{group_id}撤回')
+
+
+@sv.on_fullmatch('forwardon')
+async def withdrawon(bot: HoshinoBot, ev: CQEvent):
+    if not check_priv(ev, SUPERUSER):
+        await bot.send(ev, f'管理员以上才能使用')
+        return
+    config['forward'] = True
+    json.dump(config, open(f'{curr_dir}/config.json', 'w'), indent=4)
+    await bot.send(ev, f'已开启卡片消息模式')
+
+
+@sv.on_fullmatch('forwardoff')
+async def withdrawoff(bot: HoshinoBot, ev: CQEvent):
+    if not check_priv(ev, SUPERUSER):
+        await bot.send(ev, f'管理员以上才能使用')
+        return
+    config['forward'] = False
+    json.dump(config, open(f'{curr_dir}/config.json', 'w'), indent=4)
+    await bot.send(ev, f'已关闭卡片消息模式')
 
 
 @sv.on_prefix('setwithdraw')
@@ -170,7 +192,7 @@ async def setwithdraw(bot: HoshinoBot, ev: CQEvent):
         await bot.send(ev, '请输入setwithdraw+大于0的数字')
         return
     config['withdraw'] = time
-    json.dump(config, open(f'{curr_dir}/config.json', 'w'))
+    json.dump(config, open(f'{curr_dir}/config.json', 'w'), indent=4)
     await bot.send(ev, f'已设置撤回时间为{time}秒')
 
 
@@ -184,7 +206,7 @@ async def setpsw(bot: HoshinoBot, ev: CQEvent):
     psw = ev.message.extract_plain_text().strip()
     group_id = ev.group_id
     group_psw[str(group_id)] = psw
-    json.dump(group_psw, open(psw_path, 'w'))
+    json.dump(group_psw, open(psw_path, 'w'), indent=4)
     if psw == '':
         await bot.send(ev, f'已设置群{group_id}密码为空')
     else:
@@ -214,7 +236,7 @@ async def withdrawon(bot: HoshinoBot, ev: CQEvent):
         await bot.send(ev, '请输入正确的数字')
     else:
         config['antishielding'] = int(msg)
-        json.dump(config, open(f'{curr_dir}/config.json', 'w'))
+        json.dump(config, open(f'{curr_dir}/config.json', 'w'), indent=4)
         await bot.send(ev, f'已将反和谐设为{msg}')
 
 
