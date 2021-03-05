@@ -447,7 +447,7 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
                 "content": msg
             }
         }
-        await bot.delete_msg(message_id=msg_result)
+        await bot.delete_msg(message_id=msg_result['message_id'])
         result = await bot.send_group_forward_msg(group_id=group_id, messages=data)
     else:
         result = await bot.send_group_msg(group_id=group_id, message=img)
