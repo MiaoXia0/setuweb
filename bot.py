@@ -254,7 +254,13 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
     api = config['group_api']
 
     if api == 'lolicon':
+        num_convert = {'零': 0, '一': 1, '二': 2, '两': 2, '三': 3, '四': 4, '五': 5, '六': 6, '七': 7, '八': 8, '九': 9, '十': 10}
+        num_convert_big = {'壹': 1, '贰': 2, '叁': 3, '肆': 4, '伍': 5, '陆': 6, '柒': 7, '捌': 8, '玖': 9, '拾': 10}
         num = ev['match'].group(1)
+        if num in num_convert:
+            num = num_convert[num]
+        if num in num_convert_big:
+            num = num_convert_big[num]
         try:
             num = int(num)
         except ValueError:
@@ -267,7 +273,8 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
             if num > 10:
                 num = 10
             elif num < 1:
-                num = 1
+                await bot.send(ev, '请输入大于或等于1的数字')
+                return
         r18 = int(ev['match'].group(2) is not None)
         if ev['message_type'] == 'group':
             if r18 == 1:
