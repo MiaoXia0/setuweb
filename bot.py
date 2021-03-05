@@ -455,7 +455,10 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
                 "content": msg
             }
         }
-        await bot.delete_msg(message_id=msg_result['message_id'])
+        try:
+            await bot.delete_msg(message_id=msg_result['message_id'])
+        except aiohttp.ActionFailed:
+            await bot.send_group_msg(group_id=group_id, message='信息撤回失败')
         result = await bot.send_group_forward_msg(group_id=group_id, messages=data)
     else:
         result = await bot.send_group_msg(group_id=group_id, message=img)
@@ -519,7 +522,10 @@ async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: 
                     "content": msg
                 }
             }
-            await bot.delete_msg(message_id=msg_result['message_id'])
+            try:
+                await bot.delete_msg(message_id=msg_result['message_id'])
+            except aiohttp.ActionFailed:
+                await bot.send_group_msg(group_id=group_id, message='信息撤回失败')
             result = await bot.send_group_forward_msg(group_id=group_id, messages=data)
         else:
             result = await bot.send_group_msg(group_id=group_id, message=img)
