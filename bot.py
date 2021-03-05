@@ -417,6 +417,7 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
     msg = await format_msg(url, pid, p, title, author, ori_url)
     if config['forward']:
         msg += '\n'
+        msg_result = await bot.send_group_msg(group_id=group_id, message=msg)
     else:
         await bot.send_group_msg(group_id=group_id, message=msg)
     downres = True
@@ -442,6 +443,7 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
                 "content": msg
             }
         }
+        await bot.delete_msg(message_id=msg_result)
         result = await bot.send_group_forward_msg(group_id=group_id, messages=data)
     else:
         result = await bot.send_group_msg(group_id=group_id, message=img)
@@ -471,6 +473,7 @@ async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: 
         msg = await format_msg(url, pid, p, title, author, ori_url)
         if config['forward']:
             msg += '\n'
+            msg_result = await bot.send_group_msg(group_id=group_id, message=msg)
         else:
             await bot.send_group_msg(group_id=group_id, message=msg)
         filename = url.split('/')[-1]
@@ -496,6 +499,7 @@ async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: 
                     "content": msg
                 }
             }
+            await bot.delete_msg(message_id=msg_result['message_id'])
             result = await bot.send_group_forward_msg(group_id=group_id, messages=data)
         else:
             result = await bot.send_group_msg(group_id=group_id, message=img)
