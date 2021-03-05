@@ -421,7 +421,15 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
     msg = await format_msg(url, pid, p, title, author, ori_url)
     if config['forward']:
         msg += '\n'
-        msg_result = await bot.send_group_msg(group_id=group_id, message=msg)
+        data = {
+            "type": "node",
+            "data": {
+                "name": '小冰',
+                "uin": '2854196306',
+                "content": msg
+            }
+        }
+        msg_result = await bot.send_group_forward_msg(group_id=group_id, message=data)
     else:
         await bot.send_group_msg(group_id=group_id, message=msg)
     downres = True
@@ -477,7 +485,15 @@ async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: 
         msg = await format_msg(url, pid, p, title, author, ori_url)
         if config['forward']:
             msg += '\n'
-            msg_result = await bot.send_group_msg(group_id=group_id, message=msg)
+            data = {
+                "type": "node",
+                "data": {
+                    "name": '小冰',
+                    "uin": '2854196306',
+                    "content": msg
+                }
+            }
+            msg_result = await bot.send_group_msg(group_id=group_id, message=data)
         else:
             await bot.send_group_msg(group_id=group_id, message=msg)
         filename = url.split('/')[-1]
