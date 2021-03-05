@@ -240,7 +240,7 @@ async def withdrawon(bot: HoshinoBot, ev: CQEvent):
         await bot.send(ev, f'已将反和谐设为{msg}')
 
 
-@sv.on_rex(r'^[来发给](\d*)?[份点张幅]([Rr]18)?(.*)?[涩瑟色]图$')
+@sv.on_rex(r'^[来发给](.*)?[份点张幅]([Rr]18)?(.*)?[涩瑟色]图$')
 async def group_setu(bot: HoshinoBot, ev: CQEvent):
     if ev['message_type'] == 'group':
         group_id = ev.group_id
