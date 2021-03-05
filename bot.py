@@ -44,7 +44,11 @@ else:
     group_psw = json.load(open(psw_path, 'r'))
 
 sv = Service('setuweb')
-ip = json.loads(requests.get('https://jsonip.com/').text)['ip']
+try:
+    ip = json.loads(requests.get('https://jsonip.com/').text)['ip']
+except requests.exceptions.ConnectionError:
+    ip = 'ip获取失败'
+
 bot = get_bot()
 port = bot.config.PORT
 curr_dir = os.path.dirname(__file__)
