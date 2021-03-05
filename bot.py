@@ -429,7 +429,7 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
                 "content": msg
             }
         }
-        msg_result = await bot.send_group_forward_msg(group_id=group_id, message=data)
+        msg_result = await bot.send_group_forward_msg(group_id=group_id, messages=data)
     else:
         await bot.send_group_msg(group_id=group_id, message=msg)
     downres = True
@@ -493,7 +493,7 @@ async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: 
                     "content": msg
                 }
             }
-            msg_result = await bot.send_group_msg(group_id=group_id, message=data)
+            msg_result = await bot.send_group_msg(group_id=group_id, messages=data)
         else:
             await bot.send_group_msg(group_id=group_id, message=msg)
         filename = url.split('/')[-1]
