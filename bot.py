@@ -416,15 +416,7 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
     filename = url.split('/')[-1]
     msg = await format_msg(url, pid, p, title, author, ori_url)
     if config['forward']:
-        data = {
-            "type": "node",
-            "data": {
-                "name": '小冰',
-                "uin": '2854196306',
-                "content": msg
-            }
-        }
-        await bot.send_group_forward_msg(group_id=group_id, messages=data)
+        msg += '\n'
     else:
         await bot.send_group_msg(group_id=group_id, message=msg)
     downres = True
@@ -441,12 +433,13 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
         filename = f'{imgname}_anti.{imgtype}'
     img = R.img(f'setuweb/{filename}').cqcode
     if config['forward']:
+        msg += img
         data = {
             "type": "node",
             "data": {
                 "name": '小冰',
                 "uin": '2854196306',
-                "content": img
+                "content": msg
             }
         }
         result = await bot.send_group_forward_msg(group_id=group_id, messages=data)
@@ -477,15 +470,7 @@ async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: 
     else:
         msg = await format_msg(url, pid, p, title, author, ori_url)
         if config['forward']:
-            data = {
-                "type": "node",
-                "data": {
-                    "name": '小冰',
-                    "uin": '2854196306',
-                    "content": msg
-                }
-            }
-            await bot.send_group_forward_msg(group_id=group_id, messages=data)
+            msg += '\n'
         else:
             await bot.send_group_msg(group_id=group_id, message=msg)
         filename = url.split('/')[-1]
@@ -502,12 +487,13 @@ async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: 
             filename = f'{imgname}_anti.{imgtype}'
         img = R.img(f'setuweb/{filename}').cqcode
         if config['forward']:
+            msg += img
             data = {
                 "type": "node",
                 "data": {
                     "name": '小冰',
                     "uin": '2854196306',
-                    "content": img
+                    "content": msg
                 }
             }
             result = await bot.send_group_forward_msg(group_id=group_id, messages=data)
