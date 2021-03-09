@@ -1,4 +1,5 @@
 from aiohttp import ClientConnectorError
+from aiocqhttp.exceptions import ActionFailed
 from nonebot import get_bot
 from hoshino import Service, R
 from hoshino.typing import HoshinoBot, CQEvent
@@ -457,7 +458,7 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
         }
         try:
             await bot.delete_msg(message_id=msg_result['message_id'])
-        except aiohttp.ActionFailed:
+        except ActionFailed:
             await bot.send_group_msg(group_id=group_id, message='信息撤回失败')
         result = await bot.send_group_forward_msg(group_id=group_id, messages=data)
     else:
@@ -524,7 +525,7 @@ async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: 
             }
             try:
                 await bot.delete_msg(message_id=msg_result['message_id'])
-            except aiohttp.ActionFailed:
+            except ActionFailed:
                 await bot.send_group_msg(group_id=group_id, message='信息撤回失败')
             result = await bot.send_group_forward_msg(group_id=group_id, messages=data)
         else:
