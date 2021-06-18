@@ -75,12 +75,12 @@ async def seturesult():
         async with session.post('https://api.lolicon.app/setu/v2', data=datas) as rq:
             result = await rq.read()
             result = json.loads(result)
-    code = result['code']
+    err = result['error']
     msg = result['msg']
     count = result['count']
     data = result['data']
     return await render_template('result.html',
-                                 code=code,
+                                 err=err,
                                  msg=msg,
                                  count=count,
                                  data=data,

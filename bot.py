@@ -306,7 +306,6 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
         # apikeys = config['apikey']
         size = config['size']
         result = {}
-        code = -1
         # for apikey in apikeys:
         #     if keyword == '':
         #         params = {
@@ -350,11 +349,9 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
             async with session.post('https://api.lolicon.app/setu/v2', data=datas) as rq:
                 result = await rq.read()
                 result = json.loads(result)
-        code = result['code']
-        if code == 404:
-            await bot.send(ev, '找不到此关键字的Setu')
-        elif code != 0:
-            await bot.send(ev, 'setu获取失败')
+        err = result['error']
+        if err != '':
+            await bot.send(ev, err)
         else:
             sending = []
             data = result['data']

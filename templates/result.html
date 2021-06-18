@@ -6,15 +6,9 @@
     <script src="/setu/static/jquery-3.5.1.min.js"></script>
 </head>
 <body>
-    {% if code != 0 %}
-    失败
-    {{msg}}
+    {% if err != '' %}
+    {{err}}
     {% else %}
-        <div style="display:none">
-            成功!
-            API剩余调用额度: {{quota}}<br />
-            下次调用额度恢复时间: {{quota_min_ttl}}秒<br />
-        </div>
         数量: {{count}}<br />
         {% for setu in data %}
             pid: {{setu['pid']}} p{{setu['p']}}<br />
