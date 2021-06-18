@@ -284,7 +284,7 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
                 return
         uids = ev['match'].group('uids')
         if uids is not None and uids != '':
-            uids = uids[4:].strip().split(' ').remove('|')
+            uids = uids.strip()[4:-1].split(' ')
             try:
                 uids = [int(uid) for uid in uids]
             except ValueError:
@@ -292,7 +292,7 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
                 return
         tags = ev['match'].group('tags')
         if tags is not None and tags != '':
-            tags = tags[4:].strip().split(' ').remove('|')
+            tags = tags.strip()[4:-1].split(' ')
         r18 = int(ev['match'].group('r18') is not None)
         if ev['message_type'] == 'group':
             if r18 == 1:
