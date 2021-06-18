@@ -76,8 +76,9 @@ help_str = f'''本插件为在线setu插件
 输入antishielding设置反和谐方式
 输入forwardon开启转发消息模式
 输入forwardoff关闭转发消息模式
-输入来\\发\\给(数量)份\\点\\张\\幅(uids空格分隔的uid)(tags空格分隔的tag)(R\\r18)(关键字)\\涩\\瑟\\色图 在群内获取Setu
-(正则表达式^[来发给](.*)?[份点张幅](uids(\d\s?)*)?(tags(.*\s?)*)?的?([Rr]18)?(.*)?[涩瑟色]图$)'''
+输入来\\发\\给(数量)份\\点\\张\\幅(uids空格分隔的uid|)(tags空格分隔的tag|)(R\\r18)(关键字)\\涩\\瑟\\色图 在群内获取Setu
+(正则表达式^[来发给](?P<count>.*)?[份点张幅](?P<uids>uids(\d\s?)*\|)?(?P<tags>tags(.*\s?)*\|)?的?(?P<r18>[Rr]18)?(?P<keyword>.*)?[涩瑟色]图$)
+注意使用uids或tags需要以|结束'''
 
 
 @sv.on_fullmatch('setuhelp')
@@ -246,7 +247,7 @@ async def withdrawon(bot: HoshinoBot, ev: CQEvent):
         await bot.send(ev, f'已将反和谐设为{msg}')
 
 
-@sv.on_rex(r'^[来发给](?P<count>.*)?[份点张幅](?P<uids>uids(\d\s?)*)?(?P<tags>tags(.*\s?)*)?的?(?P<r18>[Rr]18)?(?P<keyword>.*)?[涩瑟色]图$')
+@sv.on_rex(r'^[来发给](?P<count>.*)?[份点张幅](?P<uids>uids(\d\s?)*\|)?(?P<tags>tags(.*\s?)*\|)?的?(?P<r18>[Rr]18)?(?P<keyword>.*)?[涩瑟色]图$')
 async def group_setu(bot: HoshinoBot, ev: CQEvent):
     if ev['message_type'] == 'group':
         group_id = ev.group_id
