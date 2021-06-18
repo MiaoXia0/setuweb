@@ -304,7 +304,7 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
                     return
         keyword = ev['match'].group(5)
         # apikeys = config['apikey']
-        size = int(config['size'])
+        size = config['size']
         result = {}
         code = -1
         # for apikey in apikeys:
