@@ -80,6 +80,7 @@ async def seturesult():
     return await render_template('result.html',
                                  err=err,
                                  data=data,
+                                 size=form['size'],
                                  groups=groups)
 
 

@@ -45,7 +45,7 @@
                 群密码: <input type="text" name="psw">
                 <button onClick="send({{setu['pid']}})">发送到群</button><div id="info{{setu['pid']}}"></div>
             </form>
-            <img style="width:50%;" src="{{setu['url']}}"><br />
+            <img style="width:50%;" src="{{setu['urls'][size]}}"><br />
         {% endfor %}
     {% endif %}
 <script>

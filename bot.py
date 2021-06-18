@@ -339,7 +339,7 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
             'size': size,
         }
         if keyword != '':
-            datas['keyword']=keyword
+            datas['keyword'] = keyword
         if uids is not None:
             datas['uid'] = uids
         if tags is not None:
@@ -356,16 +356,16 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
             sending = []
             data = result['data']
             for setu in data:
-                url = setu['url']
+                urls = setu['urls']
                 pid = setu['pid']
                 p = setu['p']
                 title = setu['title']
                 author = setu['author']
                 ori_url = f'https://www.pixiv.net/artworks/{pid}'
                 if ev['message_type'] == 'group':
-                    sending.append(send_to_group(ev.group_id, url, pid, p, title, author, ori_url, bool(r18)))
+                    sending.append(send_to_group(ev.group_id, urls[size], pid, p, title, author, ori_url, bool(r18)))
                 else:
-                    sending.append(send_to_private(ev.user_id, url, pid, p, title, author, ori_url))
+                    sending.append(send_to_private(ev.user_id, urls[size], pid, p, title, author, ori_url))
             await asyncio.gather(*sending)
 
 
