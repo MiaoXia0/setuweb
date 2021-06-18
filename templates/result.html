@@ -9,7 +9,6 @@
     {% if err != '' %}
     {{err}}
     {% else %}
-        数量: {{count}}<br />
         {% for setu in data %}
             pid: {{setu['pid']}} p{{setu['p']}}<br />
             uid: {{setu['uid']}}<br />

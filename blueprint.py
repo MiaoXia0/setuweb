@@ -76,13 +76,9 @@ async def seturesult():
             result = await rq.read()
             result = json.loads(result)
     err = result['error']
-    msg = result['msg']
-    count = result['count']
     data = result['data']
     return await render_template('result.html',
                                  err=err,
-                                 msg=msg,
-                                 count=count,
                                  data=data,
                                  groups=groups)
 
