@@ -246,7 +246,7 @@ async def withdrawon(bot: HoshinoBot, ev: CQEvent):
         await bot.send(ev, f'已将反和谐设为{msg}')
 
 
-@sv.on_rex(r'^[来发给](.*)?[份点张幅](uids(\d\s?)*)?(tags(.*\s?)*)?的?([Rr]18)?(.*)?[涩瑟色]图$')
+@sv.on_rex(r'^[来发给](?P<count>.*)?[份点张幅](?P<uids>uids(\d\s?)*)?(?P<tags>tags(.*\s?)*)?的?(?P<r18>[Rr]18)?(?P<keyword>.*)?[涩瑟色]图$')
 async def group_setu(bot: HoshinoBot, ev: CQEvent):
     if ev['message_type'] == 'group':
         group_id = ev.group_id
@@ -262,7 +262,7 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
     if api == 'lolicon':
         num_convert = {'零': 0, '一': 1, '二': 2, '两': 2, '三': 3, '四': 4, '五': 5, '六': 6, '七': 7, '八': 8, '九': 9, '十': 10}
         num_convert_big = {'壹': 1, '贰': 2, '叁': 3, '肆': 4, '伍': 5, '陆': 6, '柒': 7, '捌': 8, '玖': 9, '拾': 10}
-        num = ev['match'].group(1)
+        num = ev['match'].group('count')
         if num in num_convert:
             num = num_convert[num]
         if num in num_convert_big:
@@ -281,18 +281,18 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
             elif num < 1:
                 await bot.send(ev, '请输入大于或等于1的数字')
                 return
-        uids = ev['match'].group(2)
+        uids = ev['match'].group('uids')
         if uids is not None and uids != '':
-            uids = uids.split(' ')
+            uids = uids[4:].strip().split(' ')
             try:
                 uids = [int(uid) for uid in uids]
             except ValueError:
                 await bot.send(ev, '请输入正确的数字uid')
                 return
-        tags = ev['match'].group(3)
+        tags = ev['match'].group('tags')
         if tags is not None and tags != '':
-            tags = tags.split(' ')
-        r18 = int(ev['match'].group(4) is not None)
+            tags = tags[4:].strip().split(' ')
+        r18 = int(ev['match'].group('r18') is not None)
         if ev['message_type'] == 'group':
             if r18 == 1:
                 try:
@@ -302,7 +302,7 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
                 except KeyError:
                     await bot.send_group_msg(group_id=group_id, message='此群不允许发送r18Setu！')
                     return
-        keyword = ev['match'].group(5)
+        keyword = ev['match'].group('keyword')
         # apikeys = config['apikey']
         size = config['size']
         result = {}
@@ -351,6 +351,9 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
         err = result['error']
         if err != '':
             await bot.send(ev, err)
+            return
+        elif len(result['data']) == 0:
+            await bot.send(ev, '找不到符合条件的Setu')
             return
         else:
             sending = []

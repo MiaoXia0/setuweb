@@ -81,6 +81,7 @@ async def seturesult():
                                  err=err,
                                  data=data,
                                  size=form['size'],
+                                 noresult=len(data) == 0,
                                  groups=groups)
 
 
