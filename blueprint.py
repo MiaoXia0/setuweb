@@ -72,7 +72,7 @@ async def seturesult():
     if tags:
         datas['tag'] = tags
     async with aiohttp.ClientSession() as session:
-        async with session.post('https://api.lolicon.app/setu/', data=datas) as rq:
+        async with session.post('https://api.lolicon.app/setu/v2', data=datas) as rq:
             result = await rq.read()
             result = json.loads(result)
     code = result['code']
