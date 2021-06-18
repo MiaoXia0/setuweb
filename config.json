@@ -1,6 +1,5 @@
 {
-  "apikey": [""],
-  "size1200": true,
+  "size": "regular",
   "proxy": "i.pixiv.cat",
   "acgmx_token": "",
   "group_api": "lolicon",

@@ -76,7 +76,8 @@ help_str = f'''本插件为在线setu插件
 输入antishielding设置反和谐方式
 输入forwardon开启转发消息模式
 输入forwardoff关闭转发消息模式
-输入来\\发\\给(数量)份\\点\\张\\幅(R\\r18)(关键字)\\涩\\瑟\\Setu 在群内获取Setu'''
+输入来\\发\\给(数量)份\\点\\张\\幅(uids空格分隔的uid)(tags空格分隔的tag)(R\\r18)(关键字)\\涩\\瑟\\色图 在群内获取Setu
+(正则表达式^[来发给](.*)?[份点张幅](uids(\d\s?)*)?(tags(.*\s?)*)?的?([Rr]18)?(.*)?[涩瑟色]图$)'''
 
 
 @sv.on_fullmatch('setuhelp')
@@ -245,7 +246,7 @@ async def withdrawon(bot: HoshinoBot, ev: CQEvent):
         await bot.send(ev, f'已将反和谐设为{msg}')
 
 
-@sv.on_rex(r'^[来发给](.*)?[份点张幅]([Rr]18)?(.*)?[涩瑟色]图$')
+@sv.on_rex(r'^[来发给](.*)?[份点张幅](uids(\d\s?)*)?(tags(.*\s?)*)?的?([Rr]18)?(.*)?[涩瑟色]图$')
 async def group_setu(bot: HoshinoBot, ev: CQEvent):
     if ev['message_type'] == 'group':
         group_id = ev.group_id
@@ -280,7 +281,18 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
             elif num < 1:
                 await bot.send(ev, '请输入大于或等于1的数字')
                 return
-        r18 = int(ev['match'].group(2) is not None)
+        if uids := ev['match'].group(2) is not None:
+            uids = uids.split(' ')
+            try:
+                uids = [int(uid) for uid in uids]
+            except ValueError:
+                await bot.send(ev, '请输入正确的数字uid')
+                return
+
+        if tags := ev['match'].group(3) is not None:
+            tags = tags.split(' ')
+
+        r18 = int(ev['match'].group(4) is not None)
         if ev['message_type'] == 'group':
             if r18 == 1:
                 try:
@@ -290,36 +302,55 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
                 except KeyError:
                     await bot.send_group_msg(group_id=group_id, message='此群不允许发送r18Setu！')
                     return
-        keyword = ev['match'].group(3)
-        apikeys = config['apikey']
-        size1200 = int(config['size1200'])
+        keyword = ev['match'].group(5)
+        # apikeys = config['apikey']
+        size = int(config['size'])
         result = {}
         code = -1
-        for apikey in apikeys:
-            if keyword == '':
-                params = {
-                    'apikey': apikey,
-                    'proxy': config['proxy'],
-                    'r18': r18,
-                    'num': num,
-                    'size1200': size1200,
-                }
-            else:
-                params = {
-                    'apikey': config['apikey'],
-                    'proxy': config['proxy'],
-                    'keyword': keyword,
-                    'r18': r18,
-                    'num': num,
-                    'size1200': size1200,
-                }
-            async with aiohttp.ClientSession() as session:
-                async with session.get('https://api.lolicon.app/setu/', params=params) as rq:
-                    result = await rq.read()
-                    result = json.loads(result)
-            code = result['code']
-            if code == 0 or code == 404:
-                break
+        # for apikey in apikeys:
+        #     if keyword == '':
+        #         params = {
+        #             'apikey': apikey,
+        #             'proxy': config['proxy'],
+        #             'r18': r18,
+        #             'num': num,
+        #             'size': size,
+        #         }
+        #     else:
+        #         params = {
+        #             'apikey': config['apikey'],
+        #             'proxy': config['proxy'],
+        #             'keyword': keyword,
+        #             'r18': r18,
+        #             'num': num,
+        #             'size': size,
+        #         }
+        #     async with aiohttp.ClientSession() as session:
+        #         async with session.get('https://api.lolicon.app/setu/', params=params) as rq:
+        #             result = await rq.read()
+        #             result = json.loads(result)
+        #     code = result['code']
+        #     if code == 0 or code == 404:
+        #         break
+
+        datas = {
+            'proxy': config['proxy'],
+            'r18': r18,
+            'num': num,
+            'size': size,
+        }
+        if keyword != '':
+            datas['keyword']=keyword
+        if uids is not None:
+            datas['uid'] = uids
+        if tags is not None:
+            datas['tag'] = tags
+
+        async with aiohttp.ClientSession() as session:
+            async with session.post('https://api.lolicon.app/setu/', data=datas) as rq:
+                result = await rq.read()
+                result = json.loads(result)
+        code = result['code']
         if code == 404:
             await bot.send(ev, '找不到此关键字的Setu')
         elif code != 0:
@@ -341,7 +372,7 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
             await asyncio.gather(*sending)
 
 
-    elif config['group_api'] == 'acgmx':
+    elif config['group_api'] == 'acgmx':  # 个人未使用 未维护
         await bot.send_group_msg(group_id=group_id, message='获取中')
         headers = {
             'token': config['acgmx_token'],

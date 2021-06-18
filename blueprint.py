@@ -3,6 +3,7 @@ from quart import Blueprint, render_template, request
 import aiohttp
 import os
 import asyncio
+
 try:
     import ujson as json
 except ImportError:
@@ -23,44 +24,64 @@ async def seturesult():
     form = await request.form
     groups = await get_groups()
     keyword = form['keyword']
-    apikeys = config['apikey']
+    uids = form['uids'].strip()
+    if uids != '':
+        uids = uids.split(' ')
+        try:
+            uids = [int(uid) for uid in uids]
+        except ValueError:
+            uids = []
+    else:
+        uids = []
+
+    tags = form['tags'].strip()
+    if tags != '':
+        tags = tags.split(' ')
+    else:
+        tags = []
     result = {}
     code = -1
-    for apikey in apikeys:
-        if keyword == '':
-            params = {
-                'apikey': apikey,
-                'proxy': config['proxy'],
-                'r18': form['r18'],
-                'num': form['num'],
-                'size1200': form['size1200'],
-            }
-        else:
-            params = {
-                'apikey': config['apikey'],
-                'proxy': config['proxy'],
-                'keyword': keyword,
-                'r18': form['r18'],
-                'num': form['num'],
-                'size1200': form['size1200'],
-            }
-        async with aiohttp.ClientSession() as session:
-            async with session.get('https://api.lolicon.app/setu/', params=params) as rq:
-                result = await rq.read()
-                result = json.loads(result)
-        code = result['code']
-        if code == 0:
-            break
+    # for apikey in apikeys:
+    # if keyword == '':
+    #     params = {
+    #         'apikey': apikey,
+    #         'proxy': config['proxy'],
+    #         'r18': form['r18'],
+    #         'num': form['num'],
+    #         'size': form['size'],
+    #     }
+    # else:
+    #     params = {
+    #         'apikey': config['apikey'],
+    #         'proxy': config['proxy'],
+    #         'keyword': keyword,
+    #         'r18': form['r18'],
+    #         'num': form['num'],
+    #         'size': form['size'],
+    #     }
+    datas = {
+        'proxy': config['proxy'],
+        'r18': form['r18'],
+        'num': form['num'],
+        'size': form['size']
+    }
+    if keyword != '':
+        datas['keyword'] = keyword
+    if uids:
+        datas['uid'] = uids
+    if tags:
+        datas['tag'] = tags
+    async with aiohttp.ClientSession() as session:
+        async with session.post('https://api.lolicon.app/setu/', data=datas) as rq:
+            result = await rq.read()
+            result = json.loads(result)
+    code = result['code']
     msg = result['msg']
-    quota = result['quota']
-    quota_min_ttl = result['quota_min_ttl']
     count = result['count']
     data = result['data']
     return await render_template('result.html',
                                  code=code,
                                  msg=msg,
-                                 quota=quota,
-                                 quota_min_ttl=quota_min_ttl,
                                  count=count,
                                  data=data,
                                  groups=groups)

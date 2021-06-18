@@ -38,7 +38,8 @@
 |antishielding(0关\\类型1\\2\\3)|查看或设置反和谐类型|
 |forwardon|开启消息转发模式|
 |forwardoff|关闭消息转发模式|
-|来\\发\\给(数量)份\\点\\张\\幅(R\\r18)(关键字)\\涩\\瑟\\色图|群内色图括号内容可选|
+|来\\发\\给(数量)份\\点\\张\\幅(uids空格分隔的uid)(tags空格分隔的tag)(R\\r18)(关键字)\\涩\\瑟\\色图|群内色图括号内容可选|
+(正则表达式^[来发给](.*)?[份点张幅](uids(\d\s?)*)?(tags(.*\s?)*)?的?([Rr]18)?(.*)?[涩瑟色]图$)
 
 各种群内开关只有管理员以上及主人才能使用\
 r18选项仅对lolicon api有效\
@@ -53,8 +54,8 @@ r18选项仅对lolicon api有效\
 ## config说明
 |key|value|类型|
 |---|---|---|
-|apikey|lolicon.app的apikey|字符串列表|
-|size1200|群内触发时是否size1200|布尔|
+|~~apikey~~(已不使用)|~~lolicon.app的apikey~~|~~字符串列表~~|
+|size|群内触发时使用的size|枚举(original, regular, small, thumb, mini)|
 |proxy|lolicon.app的代理|字符串|
 |acgmx_token|acgmx的token|字符串|
 |group_api|群内触发setu所用的api|字符串("lolicon"/"acgmx")|
