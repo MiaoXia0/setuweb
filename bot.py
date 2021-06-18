@@ -281,17 +281,17 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
             elif num < 1:
                 await bot.send(ev, '请输入大于或等于1的数字')
                 return
-        if uids := ev['match'].group(2) is not None:
+        uids = ev['match'].group(2)
+        if uids is not None and uids != '':
             uids = uids.split(' ')
             try:
                 uids = [int(uid) for uid in uids]
             except ValueError:
                 await bot.send(ev, '请输入正确的数字uid')
                 return
-
-        if tags := ev['match'].group(3) is not None:
+        tags = ev['match'].group(3)
+        if tags is not None and tags != '':
             tags = tags.split(' ')
-
         r18 = int(ev['match'].group(4) is not None)
         if ev['message_type'] == 'group':
             if r18 == 1:
@@ -344,7 +344,6 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
             datas['uid'] = uids
         if tags is not None:
             datas['tag'] = tags
-
         async with aiohttp.ClientSession() as session:
             async with session.post('https://api.lolicon.app/setu/v2', data=datas) as rq:
                 result = await rq.read()
@@ -352,6 +351,7 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
         err = result['error']
         if err != '':
             await bot.send(ev, err)
+            return
         else:
             sending = []
             data = result['data']

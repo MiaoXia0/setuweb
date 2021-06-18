@@ -9,6 +9,9 @@
     {% if err != '' %}
     {{err}}
     {% else %}
+        {% if len(data) == 0 %}
+            未找到相应条件的Setu
+        {% endif %}
         {% for setu in data %}
             pid: {{setu['pid']}} p{{setu['p']}}<br />
             uid: {{setu['uid']}}<br />
