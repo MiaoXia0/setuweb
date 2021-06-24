@@ -339,6 +339,7 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
             'num': num,
             'size': size,
         }
+        headers = {'content-type': 'application/json'}
         if keyword != '':
             datas['keyword'] = keyword
         if uids is not None:
@@ -346,7 +347,7 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
         if tags is not None:
             datas['tag'] = tags
         async with aiohttp.ClientSession() as session:
-            async with session.post('https://api.lolicon.app/setu/v2', data=datas) as rq:
+            async with session.post('https://api.lolicon.app/setu/v2', data=json.dumps(datas), headers=headers) as rq:
                 result = await rq.read()
                 result = json.loads(result)
         err = result['error']
