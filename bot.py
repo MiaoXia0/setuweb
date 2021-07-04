@@ -386,13 +386,13 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
                 ori_url = f'https://www.pixiv.net/artworks/{pid}'
                 if ev['message_type'] == 'group':
                     groupsending.append({'group_id': ev.group_id,
-                                    'url': urls[size],
-                                    'pid': pid,
-                                    'p': p,
-                                    'title': title,
-                                    'author': author,
-                                    'ori_url': ori_url,
-                                    'r18': bool(r18)})
+                                         'url': urls[size],
+                                         'pid': pid,
+                                         'p': p,
+                                         'title': title,
+                                         'author': author,
+                                         'ori_url': ori_url,
+                                         'r18': bool(r18)})
                 else:
                     sending.append(send_to_private(ev.user_id, urls[size], pid, p, title, author, ori_url))
             if ev['message_type'] == 'group':
@@ -460,7 +460,7 @@ async def down_acgmx_img(url: str, token: str):
         return False
 
 
-async def format_msg(url: str, pid: str, p: str, title: str, author: str, ori_url: str):
+def format_msg(url: str, pid: str, p: str, title: str, author: str, ori_url: str):
     # filename = url.split('/')[-1]
     # img = R.img(f'setuweb/{filename}').cqcode
     msg = f'pid: {pid} p{p}\n标题: {title}\n作者: {author}\n原地址: {ori_url}\n{url}'
@@ -480,7 +480,7 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
         except KeyError:
             return '此群不允许发送r18Setu！'
     filename = url.split('/')[-1]
-    msg = await format_msg(url, pid, p, title, author, ori_url)
+    msg = format_msg(url, pid, p, title, author, ori_url)
     if config['forward']:
         msg += '\n'
         data = {
@@ -551,10 +551,12 @@ async def send_list_to_group(*args):
                 return '此群不允许发送r18Setu！'
         except KeyError:
             return '此群不允许发送r18Setu！'
-    await bot.send_group_msg(group_id=args[0]['group_id'], message='Setu下载中，请等待数分钟。')
+    await bot.send_group_msg(group_id=args[0]['group_id'], message='Setu下载中，请等待若干时间。')
     # 涩图下载开始
-    msg = ''
+
+    data = []
     for i in args:
+        msg = ''
         downres = True
         filename = i['url'].split('/')[-1]
         url = i['url']
@@ -572,16 +574,16 @@ async def send_list_to_group(*args):
         img = R.img(f'setuweb/{filename}').cqcode
         if config['forward']:
             filename = i['url'].split('/')[-1]
-            msg += await format_msg(i['url'], i['pid'], i['p'], i['title'], i['author'], i['ori_url']) + '\n'
+            msg += format_msg(i['url'], i['pid'], i['p'], i['title'], i['author'], i['ori_url']) + '\n'
             msg += img + '\n'
-            data = {
+            data.append({
                 "type": "node",
                 "data": {
                     "name": '小冰',
                     "uin": '2854196306',
                     "content": msg
                 }
-            }
+            })
 
     if config['forward']:
         result = await bot.send_group_forward_msg(group_id=args[0]['group_id'], messages=data)
@@ -611,7 +613,7 @@ async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: 
     except KeyError:
         return '此群不允许发送！'
     else:
-        msg = await format_msg(url, pid, p, title, author, ori_url)
+        msg = format_msg(url, pid, p, title, author, ori_url)
         if config['forward']:
             msg += '\n'
             data = {
@@ -671,7 +673,7 @@ async def send_to_group_acgmx(group_id: int, url: str, pid: str, p: str, title: 
 
 
 async def send_to_private(user_id: int, url: str, pid: str, p: str, title: str, author: str, ori_url: str):
-    msg = await format_msg(url, pid, p, title, author, ori_url)
+    msg = format_msg(url, pid, p, title, author, ori_url)
     await bot.send_private_msg(user_id=user_id, message=msg)
     filename = url.split('/')[-1]
     if not os.path.exists(R.img(f'setuweb/{filename}').path):
@@ -688,7 +690,7 @@ async def send_to_private(user_id: int, url: str, pid: str, p: str, title: str, 
 
 async def send_to_private_acgmx(user_id: int, url: str, pid: str, p: str, title: str, author: str, ori_url: str,
                                 token: str):
-    msg = await format_msg(url, pid, p, title, author, ori_url)
+    msg = format_msg(url, pid, p, title, author, ori_url)
     await bot.send_private_msg(user_id=user_id, message=msg)
     filename = url.split('/')[-1]
     if not os.path.exists(R.img(f'setuweb/{filename}').path):
