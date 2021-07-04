@@ -247,7 +247,8 @@ async def withdrawon(bot: HoshinoBot, ev: CQEvent):
         await bot.send(ev, f'已将反和谐设为{msg}')
 
 
-@sv.on_rex(r'^[来发给](?P<count>.*)?[份点张幅](?P<uids>uids(\d\s?)*\|)?(?P<tags>tags(.*\s?)*\|)?的?(?P<r18>[Rr]18)?(?P<keyword>.*)?[涩瑟色]图$')
+@sv.on_rex(
+    r'^[来发给](?P<count>.*)?[份点张幅](?P<uids>uids(\d\s?)*\|)?(?P<tags>tags(.*\s?)*\|)?的?(?P<r18>[Rr]18)?(?P<keyword>.*)?[涩瑟色]图$')
 async def group_setu(bot: HoshinoBot, ev: CQEvent):
     if ev['message_type'] == 'group':
         group_id = ev.group_id
@@ -358,6 +359,22 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
             await bot.send(ev, '找不到符合条件的Setu')
             return
         else:
+            # sending = []
+            # data = result['data']
+            # for setu in data:
+            #     urls = setu['urls']
+            #     pid = setu['pid']
+            #     p = setu['p']
+            #     title = setu['title']
+            #     author = setu['author']
+            #     ori_url = f'https://www.pixiv.net/artworks/{pid}'
+            #     if ev['message_type'] == 'group':
+            #         sending.append(send_to_group(ev.group_id, urls[size], pid, p, title, author, ori_url, bool(r18)))
+            #     else:
+            #         sending.append(send_to_private(ev.user_id, urls[size], pid, p, title, author, ori_url))
+            # await asyncio.gather(*sending)
+            # 旧单独发送
+            groupsending = []
             sending = []
             data = result['data']
             for setu in data:
@@ -368,10 +385,21 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
                 author = setu['author']
                 ori_url = f'https://www.pixiv.net/artworks/{pid}'
                 if ev['message_type'] == 'group':
-                    sending.append(send_to_group(ev.group_id, urls[size], pid, p, title, author, ori_url, bool(r18)))
+                    groupsending.append({'group_id': ev.group_id,
+                                    'url': urls[size],
+                                    'pid': pid,
+                                    'p': p,
+                                    'title': title,
+                                    'author': author,
+                                    'ori_url': ori_url,
+                                    'r18': bool(r18)})
                 else:
                     sending.append(send_to_private(ev.user_id, urls[size], pid, p, title, author, ori_url))
-            await asyncio.gather(*sending)
+            if ev['message_type'] == 'group':
+                await send_list_to_group(*groupsending)
+            else:
+                await asyncio.gather(*sending)
+
 
 
     elif config['group_api'] == 'acgmx':  # 个人未使用 未维护
@@ -498,6 +526,70 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
         result = await bot.send_group_msg(group_id=group_id, message=img)
     withdraw = int(config['withdraw'])
     ifwithdraw = True
+    try:
+        if not withdraw_groups[str(group_id)]:
+            ifwithdraw = False
+    except KeyError:
+        ifwithdraw = False
+    if ifwithdraw and withdraw and withdraw > 0:
+        print(f'{withdraw}秒后撤回')
+        await asyncio.sleep(withdraw)
+        await bot.delete_msg(message_id=result['message_id'])
+        return f'已发送到群{group_id}并撤回！'
+    return f'已发送到群{group_id}！'
+
+
+async def send_list_to_group(*args):
+    try:
+        if not allowed_groups[str(args[0]['group_id'])]:
+            return '此群不允许发送！'
+    except KeyError:
+        return '此群不允许发送！'
+    if args[0]['r18']:
+        try:
+            if not r18_groups[str(args[0]['group_id'])]:
+                return '此群不允许发送r18Setu！'
+        except KeyError:
+            return '此群不允许发送r18Setu！'
+    await bot.send_group_msg(group_id=args[0]['group_id'], message='Setu下载中，请等待数分钟。')
+    # 涩图下载开始
+    msg = ''
+    for i in args:
+        downres = True
+        filename = i['url'].split('/')[-1]
+        url = i['url']
+        if not os.path.exists(R.img(f'setuweb/{filename}').path):
+            downres = await down_img(url)
+        if not downres:
+            return f'涩图下载失败\nurl:{url}'
+        filename = url.split('/')[-1]
+        if config['antishielding']:
+            path = R.img(f'setuweb/{filename}').path
+            await imgAntiShielding(path)
+            imgtype = path.split('.')[-1]
+            imgname = path.split('\\')[-1].split('.')[-2]
+            filename = f'{imgname}_anti.{imgtype}'
+        img = R.img(f'setuweb/{filename}').cqcode
+        if config['forward']:
+            filename = i['url'].split('/')[-1]
+            msg += await format_msg(i['url'], i['pid'], i['p'], i['title'], i['author'], i['ori_url']) + '\n'
+            msg += img + '\n'
+            data = {
+                "type": "node",
+                "data": {
+                    "name": '小冰',
+                    "uin": '2854196306',
+                    "content": msg
+                }
+            }
+
+    if config['forward']:
+        result = await bot.send_group_forward_msg(group_id=args[0]['group_id'], messages=data)
+    else:
+        result = await bot.send_group_msg(group_id=args[0]['group_id'], message=msg)
+    withdraw = int(config['withdraw'])
+    ifwithdraw = True
+    group_id = args[0]['group_id']
     try:
         if not withdraw_groups[str(group_id)]:
             ifwithdraw = False
