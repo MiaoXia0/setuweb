@@ -1,4 +1,4 @@
-from aiohttp import ClientConnectorError
+from aiohttp import ClientConnectorError, ClientPayloadError
 from aiocqhttp.exceptions import ActionFailed
 from nonebot import get_bot
 from hoshino import Service, R
@@ -439,6 +439,8 @@ async def down_img(url: str):
             return True
     except ClientConnectorError:
         return False
+    except ClientPayloadError:
+        return False
 
 
 async def down_acgmx_img(url: str, token: str):
@@ -557,10 +559,11 @@ async def send_list_to_group(*args):
     data = []
     for i in args:
         msg = ''
-        downres = True
+        downres = False
         filename = i['url'].split('/')[-1]
         url = i['url']
         if not os.path.exists(R.img(f'setuweb/{filename}').path):
+
             downres = await down_img(url)
         if not downres:
             return f'涩图下载失败\nurl:{url}'
