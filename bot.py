@@ -496,7 +496,7 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
         msg_result = await bot.send_group_forward_msg(group_id=group_id, messages=data)
     else:
         await bot.send_group_msg(group_id=group_id, message=msg)
-    downres = True
+    downres = False
     if not os.path.exists(R.img(f'setuweb/{filename}').path):
         downres = await down_img(url)
     if not downres:
@@ -563,18 +563,19 @@ async def send_list_to_group(*args):
         filename = i['url'].split('/')[-1]
         url = i['url']
         if not os.path.exists(R.img(f'setuweb/{filename}').path):
-
             downres = await down_img(url)
+
         if not downres:
-            return f'涩图下载失败\nurl:{url}'
-        filename = url.split('/')[-1]
-        if config['antishielding']:
-            path = R.img(f'setuweb/{filename}').path
-            await imgAntiShielding(path)
-            imgtype = path.split('.')[-1]
-            imgname = path.split('\\')[-1].split('.')[-2]
-            filename = f'{imgname}_anti.{imgtype}'
-        img = R.img(f'setuweb/{filename}').cqcode
+            img = '此图片下载失败'
+        else:
+            filename = url.split('/')[-1]
+            if config['antishielding']:
+                path = R.img(f'setuweb/{filename}').path
+                await imgAntiShielding(path)
+                imgtype = path.split('.')[-1]
+                imgname = path.split('\\')[-1].split('.')[-2]
+                filename = f'{imgname}_anti.{imgtype}'
+            img = R.img(f'setuweb/{filename}').cqcode
         if config['forward']:
             filename = i['url'].split('/')[-1]
             msg += format_msg(i['url'], i['pid'], i['p'], i['title'], i['author'], i['ori_url']) + '\n'
