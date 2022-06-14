@@ -438,8 +438,10 @@ async def down_img(url: str):
             f.write(res)
             return True
     except ClientConnectorError:
+        print('ClientConnectError')
         return False
     except ClientPayloadError:
+        print('ClientPayloadError')
         return False
 
 
@@ -588,24 +590,39 @@ async def send_list_to_group(*args):
                     "content": msg
                 }
             })
+        else:
+            msg += format_msg(i['url'], i['pid'], i['p'], i['title'], i['author'], i['ori_url']) + '\n'
+            msg += img + '\n'
+            result = await bot.send_group_msg(group_id=args[0]['group_id'], message=msg)
+            withdraw = int(config['withdraw'])
+            ifwithdraw = True
+            group_id = args[0]['group_id']
+            try:
+                if not withdraw_groups[str(group_id)]:
+                    ifwithdraw = False
+            except KeyError:
+                ifwithdraw = False
+            if ifwithdraw and withdraw and withdraw > 0:
+                print(f'{withdraw}秒后撤回')
+                await asyncio.sleep(withdraw)
+                await bot.delete_msg(message_id=result['message_id'])
 
     if config['forward']:
         result = await bot.send_group_forward_msg(group_id=args[0]['group_id'], messages=data)
-    else:
-        result = await bot.send_group_msg(group_id=args[0]['group_id'], message=msg)
-    withdraw = int(config['withdraw'])
-    ifwithdraw = True
-    group_id = args[0]['group_id']
-    try:
-        if not withdraw_groups[str(group_id)]:
+
+        withdraw = int(config['withdraw'])
+        ifwithdraw = True
+        group_id = args[0]['group_id']
+        try:
+            if not withdraw_groups[str(group_id)]:
+                ifwithdraw = False
+        except KeyError:
             ifwithdraw = False
-    except KeyError:
-        ifwithdraw = False
-    if ifwithdraw and withdraw and withdraw > 0:
-        print(f'{withdraw}秒后撤回')
-        await asyncio.sleep(withdraw)
-        await bot.delete_msg(message_id=result['message_id'])
-        return f'已发送到群{group_id}并撤回！'
+        if ifwithdraw and withdraw and withdraw > 0:
+            print(f'{withdraw}秒后撤回')
+            await asyncio.sleep(withdraw)
+            await bot.delete_msg(message_id=result['message_id'])
+            return f'已发送到群{group_id}并撤回！'
     return f'已发送到群{group_id}！'
 
 
