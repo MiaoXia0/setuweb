@@ -45,10 +45,6 @@ else:
     group_psw = json.load(open(psw_path, 'r'))
 
 sv = Service('setuweb')
-try:
-    ip = json.loads(requests.get('https://jsonip.com/').text)['ip']
-except requests.exceptions.ConnectionError:
-    ip = 'ip获取失败'
 
 bot = get_bot()
 port = bot.config.PORT
@@ -57,6 +53,10 @@ config = json.load(open(f'{curr_dir}/config.json', 'r'))
 if config['url'] != '':
     setu_url = config['url']
 else:
+    try:
+        ip = json.loads(requests.get('https://jsonip.com/').text)['ip']
+    except requests.exceptions.ConnectionError:
+        ip = 'ip获取失败'
     if port == 80:
         setu_url = f'http://{ip}/setu/'
     else:
@@ -347,7 +347,7 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
             datas['uid'] = uids
         if tags is not None:
             datas['tag'] = tags
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(raise_for_status=True) as session:
             async with session.post('https://api.lolicon.app/setu/v2', data=json.dumps(datas), headers=headers) as rq:
                 result = await rq.read()
                 result = json.loads(result)
@@ -409,7 +409,7 @@ async def group_setu(bot: HoshinoBot, ev: CQEvent):
             'referer': 'https://www.acgmx.com/'
         }
         url = 'https://api.acgmx.com/public/setu'
-        async with aiohttp.ClientSession(headers=headers) as session:
+        async with aiohttp.ClientSession(headers=headers, raise_for_status=True) as session:
             async with session.get(url) as res:
                 res = await res.read()
                 res = json.loads(res)
@@ -431,7 +431,7 @@ async def down_img(url: str):
     filename = url.split('/')[-1]
     path = R.img('setuweb/').path
     try:
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(raise_for_status=True) as session:
             res = await session.get(url)
             f = open(f'{path}/{filename}', 'wb')
             res = await res.read()
@@ -454,7 +454,7 @@ async def down_acgmx_img(url: str, token: str):
     filename = url.split('/')[-1]
     path = R.img('setuweb/').path
     try:
-        async with aiohttp.ClientSession(headers=headers) as session:
+        async with aiohttp.ClientSession(headers=headers, raise_for_status=True) as session:
             res = await session.get(url)
             f = open(f'{path}/{filename}', 'wb')
             res = await res.read()
@@ -498,7 +498,7 @@ async def send_to_group(group_id: int, url: str, pid: str, p: str, title: str, a
         msg_result = await bot.send_group_forward_msg(group_id=group_id, messages=data)
     else:
         await bot.send_group_msg(group_id=group_id, message=msg)
-    downres = False
+    downres = True
     if not os.path.exists(R.img(f'setuweb/{filename}').path):
         downres = await down_img(url)
     if not downres:
@@ -561,7 +561,7 @@ async def send_list_to_group(*args):
     data = []
     for i in args:
         msg = ''
-        downres = False
+        downres = True
         filename = i['url'].split('/')[-1]
         url = i['url']
         if not os.path.exists(R.img(f'setuweb/{filename}').path):
