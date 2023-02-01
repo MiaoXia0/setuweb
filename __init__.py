@@ -15,4 +15,4 @@ if not os.path.exists(path):
 
 bot = get_bot()
 app = bot.server_app
-app.register_blueprint(bp, '/setu')  # 注册蓝图
+app.register_blueprint(bp, url_prefix='/setu')  # 注册蓝图
